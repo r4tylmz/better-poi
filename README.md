@@ -6,7 +6,7 @@
 
 ## Introduction
 
-Better Poi is a extensoin for Apache Poi, which is a powerful library to read and write Microsoft Office documents.
+Better Poi is a extension for Apache Poi, which is a powerful library to read and write Microsoft Office documents.
 Better Poi is designed to make it easier to use Apache Poi.
 
 ## Features
