@@ -1,17 +1,13 @@
-package com.github.betterpoi.constraint;
+package com.github.betterpoi.validation;
 
 import com.github.betterpoi.annotation.BPSheet;
-import org.apache.poi.ss.usermodel.Cell;
+import com.github.betterpoi.constraint.RowConstraint;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class DefaultConstraint implements Constraint, ColConstraint, RowConstraint {
-    @Override
-    public String validate(Cell cell) {
-        return null;
-    }
+public class DuplicateRowConstraint implements RowConstraint {
 
 
     @Override

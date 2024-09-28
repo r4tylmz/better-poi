@@ -20,4 +20,6 @@ public @interface BPColumn {
     String pattern() default "";
 
     String datePattern() default "";
+
+    String headerTitle() default "";
 }

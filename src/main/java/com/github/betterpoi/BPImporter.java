@@ -7,7 +7,6 @@ import org.apache.commons.beanutils.ConvertUtilsBean2;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +20,13 @@ import java.util.Map;
 
 public class BPImporter<T> {
     private static final Logger logger = LoggerFactory.getLogger(BPImporter.class);
-
     private final ConvertUtilsBean converter = new ConvertUtilsBean2();
-
     private Class<T> workbookClass;
-
     private BPMetadataHandler metadataHandler;
+    private BPValidator bpValidator;
+    private Workbook workbook;
 
-    private List<?> createObjects(XSSFSheet sheet, BPSheet bpSheet) {
+    private List<?> createObjects(Sheet sheet, BPSheet bpSheet) {
         final Map<String, Class<?>> columnsTypes = metadataHandler.getColumnTypes(bpSheet);
         final List<Object> beans = new ArrayList<>();
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -85,12 +83,20 @@ public class BPImporter<T> {
         return value;
     }
 
+    public List<String> getErrorMessageList() {
+        return bpValidator.getErrorMessages();
+    }
+
+    private String getFormattedErrorMessage() {
+        return String.join("\n", bpValidator.getErrorMessages());
+    }
+
     public Class<T> getWorkbookClass() {
         return workbookClass;
     }
 
-    public void register(Converter converter, Class<?> clazz) {
-        this.converter.register(converter, clazz);
+    public void setWorkbookClass(Class<T> workbookClass) {
+        this.workbookClass = workbookClass;
     }
 
     /**
@@ -101,15 +107,22 @@ public class BPImporter<T> {
         if (inputStream == null || workbookClass == null) {
             throw new IllegalArgumentException("inputStream or workbookClass must not be null");
         }
-        XSSFWorkbook workbook = null;
         try {
             workbook = new XSSFWorkbook(inputStream);
             final T bpWorkBook = workbookClass.newInstance();
+            bpValidator = new BPValidator(bpWorkBook);
             metadataHandler = new BPMetadataHandler(bpWorkBook);
             final List<BPSheet> bpSheets = metadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
-                    final XSSFSheet sheet = workbook.getSheet(bpSheet.sheetName());
+                    if (bpSheet.validate()) {
+                        boolean isValid = bpValidator.validate(workbook);
+                        if (!isValid) {
+                            logger.error("Errors found in the workbook: \n{}", getFormattedErrorMessage());
+                            return null;
+                        }
+                    }
+                    final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
                     final List<?> beans = createObjects(sheet, bpSheet);
                     final Field field = metadataHandler.getField(bpSheet);
                     PropertyUtils.setProperty(bpWorkBook, field.getName(), beans);
@@ -130,10 +143,6 @@ public class BPImporter<T> {
         }
     }
 
-    public void setWorkbookClass(Class<T> workbookClass) {
-        this.workbookClass = workbookClass;
-    }
-
     private boolean isRowCompletelyEmpty(Row row, int colSize) {
         DataFormatter dataFormatter = new DataFormatter();
         for (int i = 0; i < colSize; i++) {
@@ -142,5 +151,9 @@ public class BPImporter<T> {
             }
         }
         return true;
+    }
+
+    public void register(Converter converter, Class<?> clazz) {
+        this.converter.register(converter, clazz);
     }
 }

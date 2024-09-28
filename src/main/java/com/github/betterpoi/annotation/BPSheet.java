@@ -16,12 +16,13 @@ public @interface BPSheet {
 
     String sheetName() default "Sheet1";
 
-    Class<? extends RowConstraint>[] rowValidator() default DefaultConstraint.class;
+    Class<? extends RowConstraint>[] rowValidators() default DefaultConstraint.class;
 
-    Class<? extends ColConstraint> colValidator() default DefaultConstraint.class;
+    Class<? extends ColConstraint>[] colValidators() default DefaultConstraint.class;
 
     Class<?> type();
 
     boolean toImport() default true;
 
+    boolean validate() default true;
 }

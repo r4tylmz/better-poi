@@ -3,10 +3,12 @@ package com.github.betterpoi;
 import com.github.betterpoi.annotation.BPColumn;
 import com.github.betterpoi.annotation.BPSheet;
 import com.github.betterpoi.validation.CellValidatorManager;
+import com.github.betterpoi.validation.ColValidatorManager;
+import com.github.betterpoi.validation.RowValidatorManager;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,18 +26,36 @@ public class BPValidator {
     private CellValidatorManager cellValidatorManager;
     private Class<?> workBookClass;
     private BPMetadataHandler bpMetadataHandler;
+    private final ArrayList<String> errorMessages = new ArrayList<>();
+    private final RowValidatorManager rowValidatorManager = new RowValidatorManager();
+    private final ColValidatorManager colValidatorManager = new ColValidatorManager();
 
-    private void validateSheets(XSSFWorkbook workbook, final BPSheet bpSheet) {
+    public BPValidator(Object workbook) {
+        if (workbook == null) {
+            throw new IllegalArgumentException("workbook can't be null");
+        }
+        this.workBookClass = workbook.getClass();
+    }
+
+
+    private String getAllSheetNames(Workbook workbook) {
         final StringBuilder sb = new StringBuilder();
         for (Sheet sheet : workbook) {
+            sb.append(sheet.getSheetName());
+            sb.append(", ");
+        }
+        return sb.toString();
+    }
+
+
+    private boolean validateSheetExistence(Workbook workbook, final BPSheet bpSheet) {
+        for (Sheet sheet : workbook) {
             if (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName())) {
-                sb.append(sheet.getSheetName());
-                sb.append(", ");
+                errorMessages.add("Unable to find sheet with name: " + bpSheet.sheetName());
+                return false;
             }
         }
-        logger.error("Unable to find sheet with name: {} during excel import (excel sheetNames: {});", bpSheet.sheetName(),
-                sb);
-        throw new RuntimeException("Unable to find sheet with name: " + bpSheet.sheetName());
+        return true;
     }
 
     /**
@@ -57,9 +77,11 @@ public class BPValidator {
             final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
-                    final XSSFSheet sheet = workbook.getSheet(bpSheet.sheetName());
+                    final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
                     if (sheet == null) {
-                        validateSheets(workbook, bpSheet);
+                        if (validateSheetExistence(workbook, bpSheet)) {
+                            continue;
+                        }
                     }
 
                     violations.addAll(validateSheet(sheet, bpSheet));
@@ -79,19 +101,49 @@ public class BPValidator {
         return violations;
     }
 
-    /**
-     * For each sheet rows run cells validations then row validations. <br/>
-     * <b>Gotcha</b>: if row.getCell() is null we create the cell so that we can
-     * add a error color to it later with
-     *
-     * @return
-     */
-    private Set<String> validateSheet(XSSFSheet sheet, BPSheet bpSheet) {
-        final Set<String> sheetViolations = new HashSet<>();
-        final Iterator<Row> rowIterator = sheet.iterator();
-        Row row = rowIterator.next(); // skip headers
-        while (rowIterator.hasNext()) {
-            row = rowIterator.next();
+    public boolean validate(Workbook workbook) {
+        if (workBookClass == null) {
+            throw new IllegalArgumentException("WorkBookClass must not be null");
+        }
+
+        final List<String> violations = new ArrayList<>();
+        bpMetadataHandler = new BPMetadataHandler(workBookClass);
+        try {
+            final BPFormatter bpFormatter = new BPFormatter(workbook);
+            cellValidatorManager = new CellValidatorManager(bpFormatter);
+            final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
+            for (final BPSheet bpSheet : bpSheets) {
+                if (bpSheet.toImport()) {
+                    final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
+                    if (sheet == null) {
+                        if (validateSheetExistence(workbook, bpSheet)) {
+                            continue;
+                        }
+                    }
+                    violations.addAll(validateSheet(sheet, bpSheet));
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (workbook != null) {
+                    workbook.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        errorMessages.addAll(violations);
+        return errorMessages.isEmpty();
+    }
+
+    public List<String> validateSheet(Sheet sheet, BPSheet bpSheet) {
+        final List<String> sheetViolations = new ArrayList<>();
+        sheetViolations.addAll(validateCols(sheet, bpSheet));
+        sheetViolations.addAll(validateRows(sheet, bpSheet));
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
             final BPColumn[] bpColumns = bpSheet.columns();
             for (int column = 0; column < bpColumns.length; column++) {
                 final BPColumn bpColumn = bpColumns[column];
@@ -103,24 +155,24 @@ public class BPValidator {
                 sheetViolations.addAll(cellValidatorManager.validate(cell, bpColumn, field));
             }
         }
-        if (sheetViolations.isEmpty()) {
-            // do the rows validation only if no cell errors
-            // avoid iterating over all rows one more time, anyway this sheet is
-            // already not valid
-            // the end user will on start to see those errors once he has fix
-            // cells errors
-            // deliberately choose performance improvement over user experience
-            //sheetViolations.addAll(rowValidatorManager.validateRows(sheet, bpSheet));
-        }
         return sheetViolations;
     }
 
-    public boolean isValid(final InputStream inputStream) {
-        final Set<String> messages = validate(inputStream);
-        if (!messages.isEmpty()) {
-            logger.info("Excel validation errors: {}", String.join(",", messages));
+    private Set<String> validateRows(Sheet sheet, BPSheet bpSheet) {
+        return new HashSet<>(rowValidatorManager.validate(sheet, bpSheet));
+    }
+
+    private Set<String> validateCols(Sheet sheet, BPSheet bpSheet) {
+        return new HashSet<>(colValidatorManager.validate(sheet, bpSheet));
+    }
+
+
+    public List<String> getErrorMessages() {
+        if (workBookClass == null) {
+            throw new IllegalArgumentException("WorkBookClass must not be null");
         }
-        return messages.isEmpty();
+
+        return errorMessages;
     }
 
     public void setWorkBookClass(Class<?> workBookClass) {

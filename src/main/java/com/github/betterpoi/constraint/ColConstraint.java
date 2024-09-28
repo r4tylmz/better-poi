@@ -1,7 +1,10 @@
 package com.github.betterpoi.constraint;
 
-import org.apache.poi.ss.usermodel.Cell;
+import com.github.betterpoi.annotation.BPSheet;
+import org.apache.poi.ss.usermodel.Sheet;
+
+import java.util.Map;
 
 public interface ColConstraint {
-    String validate(Cell cell);
+    Map<Integer, String> validate(Sheet sheet, BPSheet bpSheet);
 }
