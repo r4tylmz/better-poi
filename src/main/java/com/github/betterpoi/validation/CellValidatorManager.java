@@ -13,10 +13,8 @@ import java.util.Set;
 
 public class CellValidatorManager {
     private final List<CellValidator> cellValidators = new ArrayList<>();
-    private final BPFormatter formatter;
 
     public CellValidatorManager(BPFormatter formatter) {
-        this.formatter = formatter;
         cellValidators.add(new RequiredValidator());
         cellValidators.add(new UserDefinedValidator());
         cellValidators.add(new PatternValidator());
@@ -34,11 +32,11 @@ public class CellValidatorManager {
         final Set<String> violations = new HashSet<>();
         final String value = getValue(cell);
         for (CellValidator cellValidator : cellValidators) {
-            final CellHolder cellContext = new CellHolder(cell, value, field, bpColumn);
-            final String errorMessage = cellValidator.validate(cellContext);
+            final CellHolder cellHolder = new CellHolder(cell, value, field, bpColumn);
+            final String errorMessage = cellValidator.validate(cellHolder);
             if (errorMessage != null) {
-                violations.add(errorMessage);
-                formatter.addErrorMessage(cell, errorMessage);
+                String violation = String.format("Row No: %d - Column No: %d - Error: %s", cell.getRowIndex() + 1, cell.getColumnIndex() + 1, errorMessage);
+                violations.add(violation);
             }
         }
         return violations;

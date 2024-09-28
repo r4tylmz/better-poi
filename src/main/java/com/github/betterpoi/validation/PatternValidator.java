@@ -7,10 +7,10 @@ public class PatternValidator implements CellValidator {
     @Override
     public String validate(CellHolder cellHolder) {
         final String cellValue = cellHolder.getCellValue();
-        if (cellValue == null) {
+        final String pattern = cellHolder.getBpColumn().pattern();
+        if (cellValue == null || pattern.isEmpty()) {
             return null;
         }
-        final String pattern = cellHolder.getBpColumn().pattern();
         final Pattern validatorPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
         final Matcher matcher = validatorPattern.matcher(cellValue);
         if (!matcher.find()) {
