@@ -21,7 +21,7 @@ public class ColValidatorManager implements ValidatorManager {
     public String getErrorMessage(Map<Integer, String> colViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
         for (Map.Entry<Integer, String> entry : colViolationMap.entrySet()) {
-            errorMessage.append("Column No:").append(entry.getKey() + 1).append(" - Error: ").append(entry.getValue());
+            errorMessage.append("Column No: ").append(entry.getKey() + 1).append(" - Error: ").append(entry.getValue()).append("\n");
         }
         return errorMessage.toString();
     }

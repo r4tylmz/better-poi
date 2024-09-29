@@ -22,7 +22,7 @@ public class CellValidatorManager {
 
     public String getValue(Cell cell) {
         final DataFormatter dataFormatter = new DataFormatter();
-        return dataFormatter.formatCellValue(cell);
+        return dataFormatter.formatCellValue(cell).trim();
     }
 
     /**
