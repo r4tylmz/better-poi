@@ -48,9 +48,9 @@ public class BPValidator {
     }
 
 
-    private boolean validateSheetExistence(Workbook workbook, final BPSheet bpSheet) {
+    private boolean isSheetExist(Workbook workbook, final BPSheet bpSheet) {
         for (Sheet sheet : workbook) {
-            if (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName())) {
+            if (sheet == null || (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName()))) {
                 errorMessages.add("Unable to find sheet with name: " + bpSheet.sheetName());
                 return false;
             }
@@ -78,10 +78,8 @@ public class BPValidator {
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
                     final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
-                    if (sheet == null) {
-                        if (validateSheetExistence(workbook, bpSheet)) {
-                            continue;
-                        }
+                    if (!isSheetExist(workbook, bpSheet)) {
+                        continue;
                     }
 
                     violations.addAll(validateSheet(sheet, bpSheet));
@@ -115,10 +113,8 @@ public class BPValidator {
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
                     final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
-                    if (sheet == null) {
-                        if (validateSheetExistence(workbook, bpSheet)) {
-                            continue;
-                        }
+                    if (!isSheetExist(workbook, bpSheet)) {
+                        continue;
                     }
                     violations.addAll(validateSheet(sheet, bpSheet));
                 }

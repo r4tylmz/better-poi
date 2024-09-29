@@ -2,6 +2,8 @@ package com.github.betterpoi;
 
 import com.github.betterpoi.annotation.BPColumn;
 import com.github.betterpoi.annotation.BPSheet;
+import com.github.betterpoi.enums.ExcelType;
+import com.github.betterpoi.utils.ExcelUtils;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean2;
 import org.apache.commons.beanutils.Converter;
@@ -11,9 +13,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +30,16 @@ public class BPImporter<T> {
     private BPMetadataHandler metadataHandler;
     private BPValidator bpValidator;
     private Workbook workbook;
+    private ExcelType excelType = ExcelType.XLSX;
+
+    public BPImporter() {
+    }
+
+
+    public BPImporter(Class<T> workbookClass, ExcelType excelType) {
+        this.excelType = excelType;
+        this.workbookClass = workbookClass;
+    }
 
     private List<?> createObjects(Sheet sheet, BPSheet bpSheet) {
         final Map<String, Class<?>> columnsTypes = metadataHandler.getColumnTypes(bpSheet);
@@ -91,12 +106,49 @@ public class BPImporter<T> {
         return String.join("\n", bpValidator.getErrorMessages());
     }
 
+    private Workbook getWorkbook(InputStream inputStream) {
+        try {
+            if (excelType == null) {
+                throw new IllegalArgumentException("ExcelType must not be null");
+            }
+            if (excelType == ExcelType.XLS) {
+                logger.info("XLS file is not supported and will be converted to XLSX before processing");
+                return ExcelUtils.convertXlsToXlsx(inputStream);
+            }
+            if (excelType == ExcelType.XLSX) {
+                return new XSSFWorkbook(inputStream);
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     public Class<T> getWorkbookClass() {
         return workbookClass;
     }
 
     public void setWorkbookClass(Class<T> workbookClass) {
         this.workbookClass = workbookClass;
+    }
+
+    public T importExcel(File file) {
+        try (InputStream inputStream = Files.newInputStream(file.toPath())) {
+            return importExcel(inputStream);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public T importExcel(String path) {
+        try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
+            return importExcel(inputStream);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -108,8 +160,8 @@ public class BPImporter<T> {
             throw new IllegalArgumentException("inputStream or workbookClass must not be null");
         }
         try {
-            workbook = new XSSFWorkbook(inputStream);
             final T bpWorkBook = workbookClass.newInstance();
+            workbook = getWorkbook(inputStream);
             bpValidator = new BPValidator(bpWorkBook);
             metadataHandler = new BPMetadataHandler(bpWorkBook);
             final List<BPSheet> bpSheets = metadataHandler.getSheets();
@@ -129,7 +181,7 @@ public class BPImporter<T> {
                 }
             }
             return bpWorkBook;
-        } catch (final IOException | ReflectiveOperationException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {

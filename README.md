@@ -6,23 +6,98 @@
 
 ## Introduction
 
-Better Poi is a extension for Apache Poi, which is a powerful library to read and write Microsoft Office documents.
-Better Poi is designed to make it easier to use Apache Poi.
+Better Poi is an extension for Apache POI, a powerful library used for reading and writing Microsoft Office documents.
+This extension is designed to simplify the usage of Apache POI for handling Excel files.
 
 ## Features
 
-- Read excel files with one line of code
-- Custom validation for excel files
-- Custom constraints for excel cells and rows
-- Pattern validation for excel cells
+- Simplifies reading Excel files with just one line of code.
+- Supports reading both XLS and XLSX files.
+- Supports custom validation for Excel files.
+- Allows custom constraints for Excel cells, columns and rows.
+- Provides pattern validation for Excel cells.
 
-## Installation
+## Usage
 
-```xml
+Define a class to represent the Excel file.
 
-<dependency>
-    <groupId>com.github.yingzhuo</groupId>
-    <artifactId>poi-better</artifactId>
-    <version>1.0.0</version>
-</dependency>
+```java
+public class TestExcel {
+    private String col1;
+    private String col2;
+    private Double col3;
+    private String col4;
+    private String col5;
+    private String col6;
+
+    // Getters and setters
+    // ...
+}
+```
+
+Define workbook class that is annotated with `@BPWorkBook`.
+
+```java
+
+@BPWorkBook
+public class TestWorkBook {
+
+    @BPSheet(sheetName = "Sheet1",
+            type = TestExcel.class, columns = {
+            @BPColumn(filedName = "col1"),
+            @BPColumn(filedName = "col2", required = true),
+            @BPColumn(filedName = "col3"),
+            @BPColumn(filedName = "col4"),
+            @BPColumn(filedName = "col5"),
+            @BPColumn(filedName = "col6"),
+    })
+    List<TestExcel> testExcelList;
+    // Getters and setters
+    // ...
+}
+```
+
+You can use predefined constraints for Excel cells, rows, and columns, or create your own by extending the relevant
+class (RowConstraint for rows, ColConstraint for columns, and Constraint for cells).
+
+```java
+
+@BPWorkBook
+public class TestWorkBook {
+
+    @BPSheet(sheetName = "Sheet1",
+            colValidators = {DefaultConstraint.class},
+            rowValidators = {DefaultConstraint.class},
+            type = TestExcel.class, columns = {
+            @BPColumn(filedName = "col1", headerTitle = "Column 1", cellValidator = DefaultConstraint.class),
+            @BPColumn(filedName = "col2", headerTitle = "Column 2", required = true),
+            @BPColumn(filedName = "col3", headerTitle = "Column 3"),
+            @BPColumn(filedName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
+            @BPColumn(filedName = "col5", headerTitle = "Column 5"),
+            @BPColumn(filedName = "col6", headerTitle = "Column 6"),
+    })
+    List<TestExcel> testExcelList;
+    // Getters and setters
+    // ...
+}
+```
+
+Read the Excel and get the corresponding workbook class.
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, ExcelType.XLSX);
+        final InputStream inputStream = Files.newInputStream(new File("/your_source/file.xlsx").toPath());
+        final TestWorkBook workbook = bpImporter.importExcel(inputStream);
+
+        // Alternatively, you can use a File or String Path to import the Excel file:
+        // final TestWorkBook workbook = bpImporter.importExcel(new File("/your_source/file.xlsx"));
+        // final TestWorkBook workbook = bpImporter.importExcel("/your_source/file.xlsx");
+
+        // Excel is now ready to be used as a Java object.
+        List<TestExcel> testExcelList = workbook.getTestExcelList();
+
+    }
+}
 ```
