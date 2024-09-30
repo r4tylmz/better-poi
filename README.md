@@ -44,12 +44,12 @@ public class TestWorkBook {
 
     @BPSheet(sheetName = "Sheet1",
             type = TestExcel.class, columns = {
-            @BPColumn(filedName = "col1"),
-            @BPColumn(filedName = "col2", required = true),
-            @BPColumn(filedName = "col3"),
-            @BPColumn(filedName = "col4"),
-            @BPColumn(filedName = "col5"),
-            @BPColumn(filedName = "col6"),
+            @BPColumn(fieldName = "col1"),
+            @BPColumn(fieldName = "col2", required = true),
+            @BPColumn(fieldName = "col3"),
+            @BPColumn(fieldName = "col4"),
+            @BPColumn(fieldName = "col5"),
+            @BPColumn(fieldName = "col6"),
     })
     List<TestExcel> testExcelList;
     // Getters and setters
@@ -69,12 +69,12 @@ public class TestWorkBook {
             colValidators = {DefaultConstraint.class},
             rowValidators = {DefaultConstraint.class},
             type = TestExcel.class, columns = {
-            @BPColumn(filedName = "col1", headerTitle = "Column 1", cellValidator = DefaultConstraint.class),
-            @BPColumn(filedName = "col2", headerTitle = "Column 2", required = true),
-            @BPColumn(filedName = "col3", headerTitle = "Column 3"),
-            @BPColumn(filedName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
-            @BPColumn(filedName = "col5", headerTitle = "Column 5"),
-            @BPColumn(filedName = "col6", headerTitle = "Column 6"),
+            @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidator = DefaultConstraint.class),
+            @BPColumn(fieldName = "col2", headerTitle = "Column 2", required = true),
+            @BPColumn(fieldName = "col3", headerTitle = "Column 3"),
+            @BPColumn(fieldName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
+            @BPColumn(fieldName = "col5", headerTitle = "Column 5"),
+            @BPColumn(fieldName = "col6", headerTitle = "Column 6"),
     })
     List<TestExcel> testExcelList;
     // Getters and setters

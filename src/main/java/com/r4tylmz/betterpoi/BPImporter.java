@@ -55,9 +55,9 @@ public class BPImporter<T> {
                     if (cell != null) {
                         final CellType cellType = cell.getCellTypeEnum();
                         final Object value = getCellValue(cell, cellType);
-                        final Class<?> type = columnsTypes.get(bpColumns[j].filedName());
+                        final Class<?> type = columnsTypes.get(bpColumns[j].fieldName());
                         final Object converted = converter.convert(value, type);
-                        PropertyUtils.setProperty(bean, bpColumns[j].filedName(), converted);
+                        PropertyUtils.setProperty(bean, bpColumns[j].fieldName(), converted);
                     }
                 }
                 beans.add(bean);

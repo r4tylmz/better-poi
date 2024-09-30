@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 public @interface BPColumn {
     Class<? extends Constraint> cellValidator() default DefaultConstraint.class;
 
-    String filedName();
+    String fieldName();
 
     boolean required() default false;
 

@@ -57,7 +57,7 @@ public class BPMetadataHandler {
             final Map<String, Class<?>> columnTypes = new HashMap<>();
             for (BPColumn bpColumn : bpSheet.columns()) {
                 final Class<?> beanClass = bpSheet.type();
-                final String fieldName = bpColumn.filedName();
+                final String fieldName = bpColumn.fieldName();
                 final Field field = beanClass.getDeclaredField(fieldName);
                 columnTypes.put(fieldName, field.getType());
             }
@@ -77,14 +77,14 @@ public class BPMetadataHandler {
         final Map<String, Field> fields = new HashMap<>(bpColumns.length);
         for (BPColumn bpColumn : bpColumns) {
             final Field field = getField(beanClass, bpColumn);
-            fields.put(bpColumn.filedName(), field);
+            fields.put(bpColumn.fieldName(), field);
         }
         return fields;
     }
 
     private Field getField(Class<?> beanClass, BPColumn bpColumn) {
         try {
-            return beanClass.getDeclaredField(bpColumn.filedName());
+            return beanClass.getDeclaredField(bpColumn.fieldName());
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
