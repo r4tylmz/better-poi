@@ -1,4 +1,4 @@
-package com.r4tylmz.betterpoi.validation;
+package com.r4tylmz.betterpoi.validation.row;
 
 import com.r4tylmz.betterpoi.annotation.BPSheet;
 import com.r4tylmz.betterpoi.constraint.RowConstraint;

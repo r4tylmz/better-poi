@@ -1,4 +1,4 @@
-package com.r4tylmz.betterpoi.validation;
+package com.r4tylmz.betterpoi.validation.cell;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,4 +1,4 @@
-package com.r4tylmz.betterpoi.validation;
+package com.r4tylmz.betterpoi.validation.cell;
 
 public interface CellValidator {
     String validate(CellHolder cellHolder);
