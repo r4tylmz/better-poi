@@ -1,6 +1,7 @@
 package com.r4tylmz.betterpoi;
 
 import com.r4tylmz.betterpoi.annotation.BPColumn;
+import com.r4tylmz.betterpoi.annotation.BPExcelWorkbook;
 import com.r4tylmz.betterpoi.annotation.BPSheet;
 import com.r4tylmz.betterpoi.enums.ExcelType;
 import com.r4tylmz.betterpoi.utils.ExcelUtils;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BPImporter<T> {
+public class BPImporter<T extends BPExcelWorkbook> {
     private static final Logger logger = LoggerFactory.getLogger(BPImporter.class);
     private final ConvertUtilsBean converter = new ConvertUtilsBean2();
     private Class<T> workbookClass;
