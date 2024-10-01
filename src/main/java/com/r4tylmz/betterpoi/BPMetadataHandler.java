@@ -2,7 +2,7 @@ package com.r4tylmz.betterpoi;
 
 import com.r4tylmz.betterpoi.annotation.BPColumn;
 import com.r4tylmz.betterpoi.annotation.BPSheet;
-import com.r4tylmz.betterpoi.annotation.BPWorkBook;
+import com.r4tylmz.betterpoi.annotation.BPWorkbook;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class BPMetadataHandler {
      * Check that object is correctly annotated.
      */
     private void assertWorkbookAnnotation(Class<?> workbookClass) {
-        if (workbookClass.getAnnotation(BPWorkBook.class) == null) {
+        if (workbookClass.getAnnotation(BPWorkbook.class) == null) {
             throw new IllegalArgumentException("workbookClass must be annotated with @BPWorkbook");
         }
     }
@@ -73,7 +73,9 @@ public class BPMetadataHandler {
      * BPColumn[]#type() <br/>
      * Avoid calling java.lang.reflect foreach(rows).
      */
-    public Map<String, Field> getDataFields(Class<?> beanClass, BPColumn[] bpColumns) {
+    public Map<String, Field> getDataFields(BPSheet bpSheet) {
+        final BPColumn[] bpColumns = bpSheet.columns();
+        final Class<?> beanClass = bpSheet.type();
         final Map<String, Field> fields = new HashMap<>(bpColumns.length);
         for (BPColumn bpColumn : bpColumns) {
             final Field field = getField(beanClass, bpColumn);
