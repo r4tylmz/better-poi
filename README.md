@@ -100,3 +100,18 @@ public class Test {
     }
 }
 ```
+
+Export Excel file from a list of objects.
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        final TestWorkBook workbook = new TestWorkBook();
+        // Assume that you have a list of TestExcel objects
+        workbook.setTestExcelList(new ArrayList<>());
+        final BPExporter bpExporter = new BPExporter(workbook);
+        bpExporter.exportExcel(new File("/your_destination/file.xlsx"));
+
+    }
+}
+```
