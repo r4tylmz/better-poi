@@ -35,12 +35,11 @@ public class TestExcel {
 }
 ```
 
-Define workbook class that is annotated with `@BPWorkBook`.
-
+Define a Workbook class, annotate it with `@BPWorkbook`, and implement the `BPExcelWorkbook` interface.
 ```java
 
-@BPWorkBook
-public class TestWorkBook {
+@BPWorkbook
+public class TestWorkBook implements BPExcelWorkbook {
 
     @BPSheet(sheetName = "Sheet1",
             type = TestExcel.class, columns = {
@@ -58,12 +57,12 @@ public class TestWorkBook {
 ```
 
 You can use predefined constraints for Excel cells, rows, and columns, or create your own by extending the relevant
-class (RowConstraint for rows, ColConstraint for columns, and Constraint for cells).
+class (`RowConstraint` for rows, `ColConstraint` for columns, and `UserDefinedValidator` for cells).
 
 ```java
 
-@BPWorkBook
-public class TestWorkBook {
+@BPWorkbook
+public class TestWorkBook implements BPExcelWorkbook {
 
     @BPSheet(sheetName = "Sheet1",
             colValidators = {DefaultConstraint.class},
