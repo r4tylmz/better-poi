@@ -17,6 +17,15 @@ This extension is designed to simplify the usage of Apache POI for handling Exce
 - Allows custom constraints for Excel cells, columns and rows.
 - Provides pattern validation for Excel cells.
 
+## TO DO List
+
+- [ ] Add exception handling
+- [ ] Add multi thread support for large files
+- [ ] Add support for CSV files
+- [ ] Add column data type constraint
+- [ ] Add error cell highlighting
+- [ ] Add support for inserting Excel files into an existing Excel file
+
 ## Usage
 
 Define a class to represent the Excel file.
