@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.*;
 
+/**
+ * BPMetadataHandler is responsible for handling metadata for the workbook and its sheets.
+ * It uses reflection to parse the workbook and its sheets, and provides methods to retrieve metadata.
+ */
 public class BPMetadataHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BPMetadataHandler.class);
@@ -19,6 +23,9 @@ public class BPMetadataHandler {
     private final Class<?> workbookClass;
 
 
+    /**
+     * @param workbookClass a class annotated with @BPWorkbook
+     */
     public BPMetadataHandler(Class<?> workbookClass) {
         if (workbookClass == null) {
             throw new IllegalArgumentException("workbookClass can't be null");
@@ -106,9 +113,6 @@ public class BPMetadataHandler {
         }
     }
 
-    /**
-     * warning: not *just* a simple getter.
-     */
     public List<BPSheet> getSheets() {
         return new ArrayList<>(sheets.keySet());
     }

@@ -24,6 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * BPImporter is responsible for importing data from an Excel file.
+ * It uses Apache POI to read the Excel workbook and sheets.
+ *
+ * @param <T> class that extends BPExcelWorkbook
+ */
 public class BPImporter<T extends BPExcelWorkbook> {
     private static final Logger logger = LoggerFactory.getLogger(BPImporter.class);
     private final ConvertUtilsBean converter = new ConvertUtilsBean2();
@@ -37,11 +43,25 @@ public class BPImporter<T extends BPExcelWorkbook> {
     }
 
 
+    /**
+     * Constructor for BPImporter.
+     *
+     * @param workbookClass the class that extends BPExcelWorkbook
+     * @param excelType the type of Excel file to import
+     */
     public BPImporter(Class<T> workbookClass, ExcelType excelType) {
         this.excelType = excelType;
         this.workbookClass = workbookClass;
     }
 
+
+    /**
+     * Creates objects from the rows in the given sheet based on the provided values.
+     *
+     * @param sheet the sheet where rows will be created
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return a list of objects created from the rows in the sheet
+     */
     private List<?> createObjects(Sheet sheet, BPSheet bpSheet) {
         final Map<String, Class<?>> columnsTypes = metadataHandler.getColumnTypes(bpSheet);
         final List<Object> beans = new ArrayList<>();
@@ -69,6 +89,13 @@ public class BPImporter<T extends BPExcelWorkbook> {
         return beans;
     }
 
+    /**
+     * Retrieves the value of a cell based on its type.
+     *
+     * @param cell the cell to retrieve the value from
+     * @param cellType the type of the cell
+     * @return the value of the cell
+     */
     private Object getCellValue(final Cell cell, final CellType cellType) {
         final Object value;
         switch (cellType) {
@@ -103,10 +130,23 @@ public class BPImporter<T extends BPExcelWorkbook> {
         return bpValidator.getErrorMessages();
     }
 
+    /**
+     * Retrieves the formatted error message.
+     *
+     * @return the formatted error message with new lines separating each error message
+     */
     private String getFormattedErrorMessage() {
         return String.join("\n", bpValidator.getErrorMessages());
     }
 
+    /**
+     * Retrieves the workbook object as define in
+     * {@link BPImporter#(Class)}
+     *
+     * @param inputStream the input stream of the Excel file
+     * @return the workbook object as define in
+     * {@link BPImporter#(Class)}
+     */
     private Workbook getWorkbook(InputStream inputStream) {
         try {
             if (excelType == null) {
@@ -134,6 +174,13 @@ public class BPImporter<T extends BPExcelWorkbook> {
         this.workbookClass = workbookClass;
     }
 
+    /**
+     * Imports the workbook from the specified file.
+     *
+     * @param file the file to import
+     * @return the workbook object as define in
+     * {@link BPImporter#(Class)}
+     */
     public T importExcel(File file) {
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
             return importExcel(inputStream);
@@ -143,6 +190,13 @@ public class BPImporter<T extends BPExcelWorkbook> {
         }
     }
 
+    /**
+     * Imports the workbook from the specified path.
+     *
+     * @param path the path to the file to import
+     * @return the workbook object as define in
+     * {@link BPImporter#(Class)}
+     */
     public T importExcel(String path) {
         try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
             return importExcel(inputStream);
@@ -153,6 +207,9 @@ public class BPImporter<T extends BPExcelWorkbook> {
     }
 
     /**
+     * Imports the workbook from the specified input stream.
+     *
+     * @param inputStream the input stream of the Excel file
      * @return the workbook object as define in
      * {@link BPImporter#(Class)}
      */
@@ -196,6 +253,13 @@ public class BPImporter<T extends BPExcelWorkbook> {
         }
     }
 
+    /**
+     * Checks if a row is completely empty.
+     *
+     * @param row the row to check
+     * @param colSize the number of columns in the row
+     * @return true if the row is completely empty, false otherwise
+     */
     private boolean isRowCompletelyEmpty(Row row, int colSize) {
         DataFormatter dataFormatter = new DataFormatter();
         for (int i = 0; i < colSize; i++) {

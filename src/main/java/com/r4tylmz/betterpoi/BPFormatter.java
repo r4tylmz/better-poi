@@ -15,6 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * BPFormatter is responsible for formatting cells in an Excel workbook.
+ * It uses Apache POI to create and format the cells.
+ */
 public class BPFormatter {
     private static final Logger logger = LoggerFactory.getLogger(BPFormatter.class);
     private final DataFormat dataFormat;
@@ -22,6 +26,11 @@ public class BPFormatter {
     private final CellStyle errorStyle;
     private final Workbook workbook;
 
+    /**
+     * Constructor for BPFormatter.
+     *
+     * @param workbook the workbook to format
+     */
     public BPFormatter(Workbook workbook) {
         this.workbook = workbook;
         defaultCellStyle = workbook.createCellStyle();
@@ -29,11 +38,24 @@ public class BPFormatter {
         errorStyle = createErrorCellStyle();
     }
 
+    /**
+     * Converts a hex color string to an XSSFColor.
+     *
+     * @param colorStr the hex color string to convert
+     * @return the XSSFColor object representing the hex color
+     */
     public static XSSFColor hex2Color(String colorStr) {
         Color color = Color.decode(colorStr);
         return new XSSFColor(new Color(color.getRed(), color.getGreen(), color.getBlue()));
     }
 
+    /**
+     * Adds a comment to a cell with an error message.
+     *
+     * @param message      the error message to add
+     * @param commentIndex the index of the comment cell
+     * @param row          the row to add the comment to
+     */
     private void addCommentCell(String message, final int commentIndex, final Row row) {
         final Cell commentCell = row.getCell(commentIndex);
         if (commentCell == null) {
@@ -46,6 +68,12 @@ public class BPFormatter {
         }
     }
 
+    /**
+     * Adds an error message to a cell.
+     *
+     * @param cell the cell to add the error message to
+     * @param message the error message to add
+     */
     public void addErrorMessage(Cell cell, String message) {
         final Row row = cell.getRow();
         final int commentIndex = getErrorCommentIndex(row);
@@ -54,6 +82,12 @@ public class BPFormatter {
         addCommentCell(message, commentIndex, row);
     }
 
+    /**
+     * Adds an error message to a row.
+     *
+     * @param row the row to add the error message to
+     * @param message the error message to add
+     */
     public void addErrorMessage(Row row, String message) {
         final int commentIndex = getErrorCommentIndex(row);
         if (commentIndex < 0) {
@@ -64,6 +98,11 @@ public class BPFormatter {
         addCommentCell(message, commentIndex, row);
     }
 
+    /**
+     * Creates a cell style for error messages.
+     *
+     * @return the created cell style
+     */
     private CellStyle createErrorCellStyle() {
         final CellStyle style = workbook.createCellStyle();
         style.setFillForegroundColor(HSSFColor.RED.index);
@@ -75,14 +114,14 @@ public class BPFormatter {
         return style;
     }
 
-    public void formatHeader(final Cell cell) {
-        final CellStyle headerStyle = workbook.createCellStyle();
-        final Font font = workbook.createFont();
-        font.setBold(true);
-        headerStyle.setFont(font);
-        cell.setCellStyle(headerStyle);
-    }
-
+    /**
+     * Formats a cell based on the field type.
+     *
+     * @param field the field to format
+     * @param bpColumn the BPColumn annotation containing metadata for the cell
+     * @param cell the cell to format
+     * @param value the value to set in the cell
+     */
     public void formatCell(Field field, BPColumn bpColumn, Cell cell, Object value) {
         if (value != null) {
             if (field.getType().isAssignableFrom(Boolean.class)) {
@@ -112,6 +151,25 @@ public class BPFormatter {
         }
     }
 
+    /**
+     * Formats the header of a cell.
+     *
+     * @param cell the cell to format
+     */
+    public void formatHeader(final Cell cell) {
+        final CellStyle headerStyle = workbook.createCellStyle();
+        final Font font = workbook.createFont();
+        font.setBold(true);
+        headerStyle.setFont(font);
+        cell.setCellStyle(headerStyle);
+    }
+
+    /**
+     * Gets the index of the error comment cell in a row.
+     *
+     * @param row the row to check
+     * @return the index of the error comment cell
+     */
     private int getErrorCommentIndex(Row row) {
         final Row headers = row.getSheet().getRow(0);
         return headers.getLastCellNum();
@@ -125,18 +183,36 @@ public class BPFormatter {
         return defaultCellStyle;
     }
 
+    /**
+     * Checks if a field is a date type.
+     *
+     * @param field the field to check
+     * @return true if the field is a date type, false otherwise
+     */
     private boolean isDate(Field field) {
         return field.getType().isAssignableFrom(Date.class) || field.getType().isAssignableFrom(LocalDate.class)
                 || field.getType().isAssignableFrom(java.sql.Date.class)
                 || field.getType().isAssignableFrom(LocalDateTime.class);
     }
 
+    /**
+     * Checks if a field is a numeric type.
+     *
+     * @param field the field to check
+     * @return true if the field is a numeric type, false otherwise
+     */
     private boolean isNumeric(Field field) {
         return field.getType().isAssignableFrom(Double.class) || field.getType().isAssignableFrom(Integer.class)
                 || field.getType().isAssignableFrom(Long.class) || field.getType().isAssignableFrom(Float.class)
                 || field.getType().isAssignableFrom(Short.class) || field.getType().isAssignableFrom(BigDecimal.class);
     }
 
+    /**
+     * Automatically resizes the columns in a sheet.
+     *
+     * @param sheet the sheet to resize
+     * @param length the length of the sheet
+     */
     public void setAutoResizing(Sheet sheet, int length) {
         for (int k = 0; k < length; k++) {
             sheet.autoSizeColumn(k);

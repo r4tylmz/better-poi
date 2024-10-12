@@ -20,6 +20,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * BPExporter is responsible for exporting data to an Excel file.
+ * It uses Apache POI to create and format the Excel workbook and sheets.
+ */
 public class BPExporter {
     private static final Logger logger = LoggerFactory.getLogger(BPExporter.class);
     private final Object bpWorkbook;
@@ -27,10 +31,22 @@ public class BPExporter {
     private BPFormatter bpFormatter;
     private BPMetadataHandler bpMetadataHandler;
 
+    /**
+     * Constructor for BPExporter.
+     *
+     * @param bpWorkbook the @BPWorkbook annotated object containing the data to be exported
+     */
     public BPExporter(Object bpWorkbook) {
         this.bpWorkbook = bpWorkbook;
     }
 
+    /**
+     * Creates rows in the given sheet based on the provided values.
+     *
+     * @param sheet   the sheet where rows will be created
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @param values  the list of values to be written to the sheet
+     */
     private void createRows(Sheet sheet, BPSheet bpSheet, List<?> values) {
         Map<String, Field> fieldMap = bpMetadataHandler.getDataFields(bpSheet);
         for (int rowIndex = 0; rowIndex < values.size(); rowIndex++) {
@@ -45,6 +61,12 @@ public class BPExporter {
         }
     }
 
+    /**
+     * Creates a new sheet in the workbook and sets up the header row.
+     *
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return the created sheet
+     */
     private Sheet createSheet(BPSheet bpSheet) {
         Sheet sheet = workbook.createSheet("Sheet1");
         Row rowHeader = sheet.createRow(0);
@@ -57,6 +79,11 @@ public class BPExporter {
         return sheet;
     }
 
+    /**
+     * Exports the workbook to an Excel file at the specified path.
+     *
+     * @param file the file to which the workbook will be written
+     */
     public void exportExcel(File file) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -66,6 +93,11 @@ public class BPExporter {
         }
     }
 
+    /**
+     * Exports the workbook to an Excel file at the specified path.
+     *
+     * @param path the path where the Excel file will be written
+     */
     public void exportExcel(String path) {
         try {
             File file = new File(path);
@@ -75,6 +107,11 @@ public class BPExporter {
         }
     }
 
+    /**
+     * Exports the workbook to an OutputStream.
+     *
+     * @param outputStream the OutputStream to which the workbook will be written
+     */
     public void exportExcel(OutputStream outputStream) {
         try {
             workbook = new XSSFWorkbook();
@@ -100,6 +137,13 @@ public class BPExporter {
         }
     }
 
+    /**
+     * Retrieves the property value from the given bean based on the BPColumn annotation.
+     *
+     * @param bean the object from which the property value will be retrieved
+     * @param bpColumn the BPColumn annotation containing metadata for the property
+     * @return the property value
+     */
     private Object getProperty(Object bean, BPColumn bpColumn) {
         try {
             return PropertyUtils.getProperty(bean, bpColumn.fieldName());
@@ -108,5 +152,4 @@ public class BPExporter {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
-
 }

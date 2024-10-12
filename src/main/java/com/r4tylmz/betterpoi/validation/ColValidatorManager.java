@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manager class to handle column validation.
+ * This class aggregates multiple column validators and applies them to columns to check for validation errors.
+ */
 public class ColValidatorManager implements ValidatorManager {
     private final List<ColConstraint> colValidators;
 
@@ -18,6 +22,12 @@ public class ColValidatorManager implements ValidatorManager {
         this.colValidators.add(new ColHeaderMismatchConstraint());
     }
 
+    /**
+     * Retrieves the error message for the specified column violations.
+     *
+     * @param colViolationMap the map of column numbers to error messages
+     * @return the error message as a string
+     */
     @Override
     public String getErrorMessage(Map<Integer, String> colViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
@@ -27,6 +37,15 @@ public class ColValidatorManager implements ValidatorManager {
         return errorMessage.toString();
     }
 
+
+    /**
+     * Runs all column validators on the specified sheet.
+     * Collects and returns any validation error messages.
+     *
+     * @param sheet   the sheet to validate
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return a list of validation error messages, if any
+     */
     @Override
     public List<String> validate(Sheet sheet, BPSheet bpSheet) {
         final List<String> violations = new ArrayList<>();

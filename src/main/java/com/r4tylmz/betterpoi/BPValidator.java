@@ -21,6 +21,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * BPValidator is responsible for validating an Excel workbook.
+ */
 public class BPValidator {
     private static final Logger logger = LoggerFactory.getLogger(BPValidator.class);
     private CellValidatorManager cellValidatorManager;
@@ -30,6 +33,11 @@ public class BPValidator {
     private final RowValidatorManager rowValidatorManager = new RowValidatorManager();
     private final ColValidatorManager colValidatorManager = new ColValidatorManager();
 
+    /**
+     * Constructor for BPValidator.
+     *
+     * @param workbook the workbook to validate
+     */
     public BPValidator(Object workbook) {
         if (workbook == null) {
             throw new IllegalArgumentException("workbook can't be null");
@@ -38,6 +46,12 @@ public class BPValidator {
     }
 
 
+    /**
+     * Retrieves the names of all sheets in the given workbook.
+     *
+     * @param workbook the workbook from which to retrieve sheet names
+     * @return a comma-separated string of all sheet names
+     */
     private String getAllSheetNames(Workbook workbook) {
         final StringBuilder sb = new StringBuilder();
         for (Sheet sheet : workbook) {
@@ -47,7 +61,27 @@ public class BPValidator {
         return sb.toString();
     }
 
+    /**
+     * Retrieves the error messages from the validation process.
+     *
+     * @return a list of error messages
+     * @throws IllegalArgumentException if workBookClass is null
+     */
+    public List<String> getErrorMessages() {
+        if (workBookClass == null) {
+            throw new IllegalArgumentException("WorkBookClass must not be null");
+        }
 
+        return errorMessages;
+    }
+
+    /**
+     * Checks if the workbook contains a sheet with the given name.
+     *
+     * @param workbook the workbook to check
+     * @param bpSheet  the BPSheet annotation containing the sheet name
+     * @return true if the sheet exists, false otherwise
+     */
     private boolean isSheetExist(Workbook workbook, final BPSheet bpSheet) {
         for (Sheet sheet : workbook) {
             if (sheet == null || (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName()))) {
@@ -59,8 +93,55 @@ public class BPValidator {
     }
 
     /**
-     * @param inputStream the .xlsx file
-     * @return an empty set if no error otherwise a list of error messages
+     * Validates the given Excel workbook.
+     *
+     * @param workbook the workbook to validate
+     * @return true if the workbook is valid, false otherwise
+     * @throws IllegalArgumentException if workBookClass is null
+     * @throws RuntimeException if an exception occurs during validation
+     */
+    public boolean validate(Workbook workbook) {
+        if (workBookClass == null) {
+            throw new IllegalArgumentException("WorkBookClass must not be null");
+        }
+
+        final List<String> violations = new ArrayList<>();
+        bpMetadataHandler = new BPMetadataHandler(workBookClass);
+        try {
+            final BPFormatter bpFormatter = new BPFormatter(workbook);
+            cellValidatorManager = new CellValidatorManager(bpFormatter);
+            final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
+            for (final BPSheet bpSheet : bpSheets) {
+                if (bpSheet.toImport()) {
+                    final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
+                    if (!isSheetExist(workbook, bpSheet)) {
+                        continue;
+                    }
+                    violations.addAll(validateSheet(sheet, bpSheet));
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (workbook != null) {
+                    workbook.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        errorMessages.addAll(violations);
+        return errorMessages.isEmpty();
+    }
+
+    /**
+     * Validates the given Excel workbook from an InputStream.
+     *
+     * @param inputStream the InputStream of the Excel workbook to validate
+     * @return a set of validation error messages
+     * @throws IllegalArgumentException if workBookClass is null
+     * @throws RuntimeException if an IOException occurs while reading the workbook
      */
     public Set<String> validate(InputStream inputStream) {
         if (workBookClass == null) {
@@ -99,41 +180,35 @@ public class BPValidator {
         return violations;
     }
 
-    public boolean validate(Workbook workbook) {
-        if (workBookClass == null) {
-            throw new IllegalArgumentException("WorkBookClass must not be null");
-        }
-
-        final List<String> violations = new ArrayList<>();
-        bpMetadataHandler = new BPMetadataHandler(workBookClass);
-        try {
-            final BPFormatter bpFormatter = new BPFormatter(workbook);
-            cellValidatorManager = new CellValidatorManager(bpFormatter);
-            final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
-            for (final BPSheet bpSheet : bpSheets) {
-                if (bpSheet.toImport()) {
-                    final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
-                    if (!isSheetExist(workbook, bpSheet)) {
-                        continue;
-                    }
-                    violations.addAll(validateSheet(sheet, bpSheet));
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (workbook != null) {
-                    workbook.close();
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        errorMessages.addAll(violations);
-        return errorMessages.isEmpty();
+    /**
+     * Validates the columns of the given sheet.
+     *
+     * @param sheet the sheet to validate
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return a set of validation error messages
+     */
+    private Set<String> validateCols(Sheet sheet, BPSheet bpSheet) {
+        return new HashSet<>(colValidatorManager.validate(sheet, bpSheet));
     }
 
+    /**
+     * Validates the rows of the given sheet.
+     *
+     * @param sheet the sheet to validate
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return a set of validation error messages
+     */
+    private Set<String> validateRows(Sheet sheet, BPSheet bpSheet) {
+        return new HashSet<>(rowValidatorManager.validate(sheet, bpSheet));
+    }
+
+    /**
+     * Validates the given sheet.
+     *
+     * @param sheet the sheet to validate
+     * @param bpSheet the BPSheet annotation containing metadata for the sheet
+     * @return a list of validation error messages
+     */
     public List<String> validateSheet(Sheet sheet, BPSheet bpSheet) {
         final List<String> sheetViolations = new ArrayList<>();
         sheetViolations.addAll(validateCols(sheet, bpSheet));
@@ -152,23 +227,6 @@ public class BPValidator {
             }
         }
         return sheetViolations;
-    }
-
-    private Set<String> validateRows(Sheet sheet, BPSheet bpSheet) {
-        return new HashSet<>(rowValidatorManager.validate(sheet, bpSheet));
-    }
-
-    private Set<String> validateCols(Sheet sheet, BPSheet bpSheet) {
-        return new HashSet<>(colValidatorManager.validate(sheet, bpSheet));
-    }
-
-
-    public List<String> getErrorMessages() {
-        if (workBookClass == null) {
-            throw new IllegalArgumentException("WorkBookClass must not be null");
-        }
-
-        return errorMessages;
     }
 
     public void setWorkBookClass(Class<?> workBookClass) {

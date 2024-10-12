@@ -11,10 +11,22 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.*;
 
+/**
+ * Constraint implementation that checks for header mismatches in columns.
+ * This class validates that the headers in an Excel sheet match the expected headers defined in the BPSheet annotation.
+ */
 public class ColHeaderMismatchConstraint implements ColConstraint {
     private final List<String> colHeaders = new ArrayList<>();
     private final DataFormatter dataFormatter = new DataFormatter();
 
+    /**
+     * Retrieves the column headers from the given sheet.
+     * If the headers have already been retrieved, it returns the cached headers.
+     *
+     * @param sheet the Excel sheet from which to retrieve the headers
+     * @return an unmodifiable list of column headers
+     * @throws IllegalArgumentException if the sheet has no header row
+     */
     private List<String> getColHeaders(Sheet sheet) {
         if (!colHeaders.isEmpty()) {
             return Collections.unmodifiableList(colHeaders);
@@ -34,6 +46,15 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
         return Collections.unmodifiableList(colHeaders);
     }
 
+    /**
+     * Validates the columns in the given sheet based on the specified BPSheet annotation.
+     * Checks if the actual headers in the sheet match the expected headers defined in the BPSheet annotation.
+     *
+     * @param sheet   the Excel sheet to be validated
+     * @param bpSheet the BPSheet annotation containing validation rules
+     * @return a map where the key is the column index and the value is the validation error message
+     * @throws IllegalArgumentException if the sheet has no header row
+     */
     @Override
     public Map<Integer, String> validate(Sheet sheet, BPSheet bpSheet) {
         final List<String> colHeaders = getColHeaders(sheet);

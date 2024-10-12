@@ -7,14 +7,16 @@ import java.util.Map;
 
 /**
  * Constraint that is applied to a row.
+ * Implementations of this interface should provide validation logic for rows in a sheet.
  */
 public interface RowConstraint {
 
     /**
-     * Validate the row.
+     * Validates the row in the given sheet based on the specified BPSheet annotation.
      *
-     * @param bpSheet the sheet to validate
-     * @return Map of column index to error message.
+     * @param sheet the Excel sheet to be validated
+     * @param bpSheet the BPSheet annotation containing validation rules
+     * @return a map where the key is the column index and the value is the validation error message
      */
     Map<Integer, String> validate(Sheet sheet, BPSheet bpSheet);
 }

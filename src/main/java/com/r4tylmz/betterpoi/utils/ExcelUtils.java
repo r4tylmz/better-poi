@@ -8,6 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ExcelUtils {
+
+    /**
+     * Converts an Excel file from .xls format to .xlsx format.
+     *
+     * @param inputStream the input stream of the .xls file
+     * @return the converted XSSFWorkbook object
+     * @throws IOException if an I/O error occurs during conversion
+     */
     public static XSSFWorkbook convertXlsToXlsx(InputStream inputStream) throws IOException {
         try {
             Workbook xlsWorkbook = new HSSFWorkbook(inputStream);
@@ -39,6 +47,12 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     * Copies the content and style of a cell to a new cell.
+     *
+     * @param oldCell the cell to be copied
+     * @param newCell the cell to copy the content and style to
+     */
     private static void copyCell(Cell oldCell, Cell newCell) {
         Workbook newWorkbook = newCell.getSheet().getWorkbook();
         CellStyle newCellStyle = newWorkbook.createCellStyle();
@@ -70,6 +84,12 @@ public class ExcelUtils {
         }
     }
 
+    /**
+     * Copies the style of a cell to a new cell style.
+     *
+     * @param oldStyle the cell style to be copied
+     * @param newStyle the cell style to copy the properties to
+     */
     private static void copyCellStyle(CellStyle oldStyle, CellStyle newStyle) {
         newStyle.setDataFormat(oldStyle.getDataFormat());
         newStyle.setWrapText(oldStyle.getWrapText());

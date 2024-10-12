@@ -7,7 +7,8 @@ import java.lang.reflect.Field;
 
 
 /**
- * POJO object to hold values
+ * POJO object to hold values.
+ * This class encapsulates the details of a cell, including its value, the field it corresponds to, and the BPColumn annotation.
  */
 public class CellHolder {
     private Cell cell;
@@ -18,6 +19,14 @@ public class CellHolder {
     public CellHolder() {
     }
 
+    /**
+     * Parameterized constructor to initialize all fields.
+     *
+     * @param cell      the Excel cell
+     * @param cellValue the value of the cell as a string
+     * @param field     the field in the class corresponding to the cell
+     * @param bpColumn  the BPColumn annotation containing metadata for the cell
+     */
     public CellHolder(Cell cell, String cellValue, Field field, BPColumn bpColumn) {
         this.cell = cell;
         this.cellValue = cellValue;
