@@ -1,7 +1,6 @@
 package com.r4tylmz.betterpoi;
 
 import com.r4tylmz.betterpoi.annotation.BPColumn;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -105,9 +104,9 @@ public class BPFormatter {
      */
     private CellStyle createErrorCellStyle() {
         final CellStyle style = workbook.createCellStyle();
-        style.setFillForegroundColor(HSSFColor.RED.index);
+        style.setFillForegroundColor(IndexedColors.RED.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setFillBackgroundColor(HSSFColor.RED.index);
+        style.setFillBackgroundColor(IndexedColors.RED.getIndex());
         final Font font = workbook.createFont();
         font.setColor(IndexedColors.WHITE.getIndex());
         style.setFont(font);
@@ -125,20 +124,24 @@ public class BPFormatter {
     public void formatCell(Field field, BPColumn bpColumn, Cell cell, Object value) {
         if (value != null) {
             if (field.getType().isAssignableFrom(Boolean.class)) {
-                cell.setCellValue(value.toString());
-                cell.setCellType(CellType.BOOLEAN);
+                boolean boolValue = (boolean) value;
+                cell.setCellValue(boolValue);
             } else if (isNumeric(field)) {
                 cell.setCellValue(Double.parseDouble(value.toString()));
-                cell.setCellType(CellType.NUMERIC);
             } else if (isDate(field)) {
                 if (field.getType().isAssignableFrom(Date.class)) {
                     cell.setCellValue((Date) value);
+                } else if (field.getType().isAssignableFrom(LocalDate.class)) {
+                    cell.setCellValue((LocalDate) value);
+                } else if (field.getType().isAssignableFrom(java.sql.Date.class)) {
+                    cell.setCellValue((java.sql.Date) value);
+                } else if (field.getType().isAssignableFrom(LocalDateTime.class)) {
+                    cell.setCellValue((LocalDateTime) value);
                 } else {
                     cell.setCellValue(value.toString());
                 }
             } else {
                 cell.setCellValue(value.toString());
-                cell.setCellType(CellType.STRING);
             }
 
             if (isDate(field)) {
