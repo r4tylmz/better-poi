@@ -15,6 +15,8 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <junit.version>4.13.1</junit.version>
         <mockito.version>1.10.19</mockito.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
