@@ -74,7 +74,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
                 for (int j = 0; j < bpColumns.length; j++) {
                     final Cell cell = row.getCell(j);
                     if (cell != null) {
-                        final CellType cellType = cell.getCellTypeEnum();
+                        final CellType cellType = cell.getCellType();
                         final Object value = getCellValue(cell, cellType);
                         final Class<?> type = columnsTypes.get(bpColumns[j].fieldName());
                         final Object converted = converter.convert(value, type);
@@ -160,7 +160,6 @@ public class BPImporter<T extends BPExcelWorkbook> {
                 return new XSSFWorkbook(inputStream);
             }
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
         return null;
@@ -185,7 +184,6 @@ public class BPImporter<T extends BPExcelWorkbook> {
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
             return importExcel(inputStream);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -201,7 +199,6 @@ public class BPImporter<T extends BPExcelWorkbook> {
         try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
             return importExcel(inputStream);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
@@ -240,7 +237,6 @@ public class BPImporter<T extends BPExcelWorkbook> {
             }
             return bpWorkBook;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
             try {
