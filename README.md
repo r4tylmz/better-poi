@@ -66,7 +66,7 @@ public class TestWorkBook implements BPExcelWorkbook {
 ```
 
 You can use predefined constraints for Excel cells, rows, and columns, or create your own by extending the relevant
-class (`RowConstraint` for rows, `ColConstraint` for columns, and `UserDefinedValidator` for cells).
+class (`RowConstraint` for rows, `ColConstraint` for columns, and `CellValidator` for cells).
 
 ```java
 
@@ -77,7 +77,7 @@ public class TestWorkBook implements BPExcelWorkbook {
             colValidators = {DefaultConstraint.class},
             rowValidators = {DefaultConstraint.class},
             type = TestExcel.class, columns = {
-            @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidator = DefaultConstraint.class),
+            @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidators = {DefaultConstraint.class}),
             @BPColumn(fieldName = "col2", headerTitle = "Column 2", required = true),
             @BPColumn(fieldName = "col3", headerTitle = "Column 3"),
             @BPColumn(fieldName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
