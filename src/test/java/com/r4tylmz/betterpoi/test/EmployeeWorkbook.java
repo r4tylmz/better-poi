@@ -5,6 +5,7 @@ import com.r4tylmz.betterpoi.annotation.BPExcelWorkbook;
 import com.r4tylmz.betterpoi.annotation.BPSheet;
 import com.r4tylmz.betterpoi.annotation.BPWorkbook;
 import com.r4tylmz.betterpoi.constraint.DefaultConstraint;
+import com.r4tylmz.betterpoi.validation.cell.UserDefinedMaxLenValidator;
 import com.r4tylmz.betterpoi.validation.row.DuplicateRowConstraint;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class EmployeeWorkbook implements BPExcelWorkbook {
             rowValidators = {DuplicateRowConstraint.class},
             type = EmployeeRecord.class, columns = {
             @BPColumn(fieldName = "employeeId", headerTitle = "Employee ID", required = true),
-            @BPColumn(fieldName = "employeeName", headerTitle = "Employee Name", cellValidator = DefaultConstraint.class),
+            @BPColumn(fieldName = "employeeName", headerTitle = "Employee Name", cellValidators = {UserDefinedMaxLenValidator.class}),
             @BPColumn(fieldName = "salary", headerTitle = "Salary"),
             @BPColumn(fieldName = "department", headerTitle = "Department"),
             @BPColumn(fieldName = "yearsOfService", headerTitle = "Years of Service"),
