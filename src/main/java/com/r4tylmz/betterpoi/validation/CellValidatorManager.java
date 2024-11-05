@@ -2,7 +2,11 @@ package com.r4tylmz.betterpoi.validation;
 
 import com.r4tylmz.betterpoi.BPFormatter;
 import com.r4tylmz.betterpoi.annotation.BPColumn;
-import com.r4tylmz.betterpoi.validation.cell.*;
+import com.r4tylmz.betterpoi.constraint.ConstraintFactory;
+import com.r4tylmz.betterpoi.validation.cell.CellHolder;
+import com.r4tylmz.betterpoi.validation.cell.CellValidator;
+import com.r4tylmz.betterpoi.validation.cell.PatternValidator;
+import com.r4tylmz.betterpoi.validation.cell.RequiredValidator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 
@@ -29,7 +33,6 @@ public class CellValidatorManager {
     public CellValidatorManager(BPFormatter formatter) {
         this.formatter = formatter;
         cellValidators.add(new RequiredValidator());
-        cellValidators.add(new UserDefinedValidator());
         cellValidators.add(new PatternValidator());
     }
 
@@ -56,6 +59,7 @@ public class CellValidatorManager {
     public Set<String> validate(Cell cell, BPColumn bpColumn, Field field) {
         final Set<String> violations = new HashSet<>();
         final String value = getValue(cell);
+        this.cellValidators.addAll(ConstraintFactory.getInstance().getCellValidators(bpColumn.cellValidators()));
         for (CellValidator cellValidator : cellValidators) {
             final CellHolder cellHolder = new CellHolder(cell, value, field, bpColumn);
             final String errorMessage = cellValidator.validate(cellHolder);

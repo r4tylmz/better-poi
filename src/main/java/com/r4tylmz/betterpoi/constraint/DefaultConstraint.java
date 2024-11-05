@@ -1,6 +1,8 @@
 package com.r4tylmz.betterpoi.constraint;
 
 import com.r4tylmz.betterpoi.annotation.BPSheet;
+import com.r4tylmz.betterpoi.validation.cell.CellHolder;
+import com.r4tylmz.betterpoi.validation.cell.CellValidator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -8,10 +10,10 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Default implementation of the Constraint, ColConstraint, and RowConstraint interfaces.
+ * Default implementation of the Constraint, ColConstraint, RowConstraint and CellValidator interfaces.
  * This class provides default validation logic for cells, columns, and rows in an Excel sheet.
  */
-public class DefaultConstraint implements Constraint, ColConstraint, RowConstraint {
+public class DefaultConstraint implements Constraint, ColConstraint, RowConstraint, CellValidator {
 
     /**
      * Validates the given cell.
@@ -34,5 +36,16 @@ public class DefaultConstraint implements Constraint, ColConstraint, RowConstrai
     @Override
     public Map<Integer, String> validate(Sheet sheet, BPSheet bpSheet) {
         return Collections.emptyMap();
+    }
+
+    /**
+     * Validates the given cell holder.
+     *
+     * @param cellHolder the cell holder containing the cell and its metadata
+     * @return a validation error message if the cell is invalid, otherwise null
+     */
+    @Override
+    public String validate(CellHolder cellHolder) {
+        return null;
     }
 }

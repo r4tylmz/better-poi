@@ -223,6 +223,7 @@ public class BPValidator {
                     cell = row.createCell(column);
                 }
                 final Field field = bpMetadataHandler.getField(bpSheet);
+                CellValidatorManager cellValidatorManager = new CellValidatorManager(new BPFormatter(sheet.getWorkbook()));
                 sheetViolations.addAll(cellValidatorManager.validate(cell, bpColumn, field));
             }
         }

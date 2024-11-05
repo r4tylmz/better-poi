@@ -1,7 +1,7 @@
 package com.r4tylmz.betterpoi.annotation;
 
-import com.r4tylmz.betterpoi.constraint.Constraint;
 import com.r4tylmz.betterpoi.constraint.DefaultConstraint;
+import com.r4tylmz.betterpoi.validation.cell.CellValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -17,12 +17,12 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface BPColumn {
     /**
-     * Specifies the cell validator class to be used for this column.
-     * Defaults to {@link DefaultConstraint}.
+     * Specifies the cell validators to be used for the column.
+     * By default, it uses {@link DefaultConstraint}.
      *
-     * @return the class of the cell validator
+     * @return an array of cell validator classes
      */
-    Class<? extends Constraint> cellValidator() default DefaultConstraint.class;
+    Class<? extends CellValidator>[] cellValidators() default DefaultConstraint.class;
 
     /**
      * Specifies the date pattern to be used for the column.
