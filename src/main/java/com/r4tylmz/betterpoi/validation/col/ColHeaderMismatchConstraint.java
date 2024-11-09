@@ -69,12 +69,7 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
             BPColumn bpColumn = bpSheet.columns()[colNo];
             String expectedHeader = ColUtil.getHeaderTitle(bpColumn);
 
-            Cell cell = headerRow.getCell(colNo);
-            String actualHeader = Optional.ofNullable(cell)
-                    .map(dataFormatter::formatCellValue)
-                    .orElse("");
-
-            if (!actualHeader.equals(expectedHeader)) {
+            if (!colHeaders.contains(expectedHeader)) {
                 String violation = String.format("Expected header: %s but not found in headers %s", expectedHeader, colHeaders);
                 violationMap.put(colNo, violation);
             }
