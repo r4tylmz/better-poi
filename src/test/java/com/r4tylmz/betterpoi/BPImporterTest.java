@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Base64;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +18,9 @@ public class BPImporterTest {
     public static final String NON_EXISTENT_FILE_XLSX_PATH = "src/test/resources/Non_Existent_File.xlsx";
     public static final String RESOURCE_FAKE_EMPLOYEE_DATA_XLSX = "Fake_Employee_Data.xlsx";
     public static final String FAKE_EMPLOYEE_DATA_ERROR_XLSX = "Fake_Employee_Data_Error.xlsx";
+    public static final String FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT = "Fake_Employee_Data_General_Format.xlsx";
+    public static final String FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT_PATH = "src/test/resources/Fake_Employee_Data_General_Format.xlsx";
+
     private BPImporter<EmployeeWorkbook> bpImporter;
 
     private InputStream getInputStream(String name) {
@@ -119,6 +124,17 @@ public class BPImporterTest {
     }
 
     @Test
+    public void testImportExcelWithGeneralFormat() {
+        try (InputStream inputStream = getInputStream(FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT)) {
+            EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
+            assertNotNull(employeeWorkbook);
+            assertEquals(20, employeeWorkbook.getEmployeeRecordList().size());
+        } catch (Exception e) {
+            fail("Unexpected exception");
+        }
+    }
+
+    @Test
     public void testImportExcelWithNoErrors() {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
             EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
@@ -167,6 +183,18 @@ public class BPImporterTest {
             bpImporter.importExcel(inputStream);
         } catch (Exception e) {
             assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");
+        }
+    }
+
+    @Test
+    public void testImportExcelWithValidBase64() {
+        try {
+            String base64 = Base64.getEncoder().encodeToString(Files.readAllBytes(new File(FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT_PATH).toPath()));
+            EmployeeWorkbook employeeWorkbook = bpImporter.importExcelBase64(base64);
+            assertNotNull(employeeWorkbook);
+            assertEquals(20, employeeWorkbook.getEmployeeRecordList().size());
+        } catch (Exception e) {
+            fail("Unexpected exception");
         }
     }
 
