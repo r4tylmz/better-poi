@@ -227,8 +227,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * Imports the workbook from the specified file.
      *
      * @param file the file to import
-     * @return the workbook object as define in
-     * {@link BPImporter#(Class)}
+     * @return the workbook object
      */
     public T importExcel(File file) {
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
@@ -242,8 +241,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * Imports the workbook from the specified path.
      *
      * @param path the path to the file to import
-     * @return the workbook object as define in
-     * {@link BPImporter#(Class)}
+     * @return the workbook object
      */
     public T importExcel(String path) {
         try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
@@ -257,8 +255,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * Imports the workbook from the specified input stream.
      *
      * @param inputStream the input stream of the Excel file
-     * @return the workbook object as define in
-     * {@link BPImporter#(Class)}
+     * @return the workbook object
      */
     public T importExcel(InputStream inputStream) {
         if (inputStream == null || workbookClass == null) {
@@ -303,8 +300,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * Imports the workbook from the specified base64 encoded string.
      *
      * @param fileAsBase64 the base64 encoded string of the Excel file
-     * @return the workbook object as define in
-     * {@link BPImporter#(Class)}
+     * @return the workbook object
      */
     public T importExcelBase64(String fileAsBase64) {
         try {

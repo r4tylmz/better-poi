@@ -57,7 +57,8 @@ public class BPMetadataHandler {
     }
 
     /**
-     * @return a map of fieldName and their associated type (a.k.a Integer,Double, String)
+     * @param bpSheet the sheet to get the column types for
+     * @return a map of fieldName and their associated type class
      */
     public Map<String, Class<?>> getColumnTypes(BPSheet bpSheet) {
         try {
@@ -76,9 +77,8 @@ public class BPMetadataHandler {
     }
 
     /**
-     * Create a Map<fieldName, Field> for each bean param define in
-     * BPColumn[]#type() <br/>
-     * Avoid calling java.lang.reflect foreach(rows).
+     * @param bpSheet the sheet to get the data fields for
+     * @return a map of fieldName and their associated Field
      */
     public Map<String, Field> getDataFields(BPSheet bpSheet) {
         final BPColumn[] bpColumns = bpSheet.columns();
