@@ -2,7 +2,21 @@
 
 > Still in development and not ready for production use.
 
-> Did not release to Maven Central Repository yet.
+![Maven Central Version](https://img.shields.io/maven-central/v/io.github.r4tylmz/better-poi)
+![GitHub](https://img.shields.io/github/license/r4tylmz/better-poi)
+![GitHub issues](https://img.shields.io/github/issues/r4tylmz/better-poi)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/r4tylmz/better-poi)
+
+## Installation
+
+```xml
+
+<dependency>
+    <groupId>io.github.r4tylmz</groupId>
+    <artifactId>better-poi</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ## Introduction
 
