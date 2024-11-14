@@ -1,11 +1,10 @@
 name: Deploy to Maven Central
-
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish'
-        required: true
+        description: 'Version to publish (leave empty for automatic versioning)'
+        required: false
 
 jobs:
   publish:
@@ -15,13 +14,40 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref_name }}
+          fetch-depth: 0  # Tüm git geçmişini çek
 
-      - name: Step 2 - Update version in pom.xml
+      - name: Step 2 - Get latest version
+        id: get_version
         run: |
-          mvn versions:set -DnewVersion=${{ github.event.inputs.version }}
+          # Son tag'i al (v1.0.0 formatında)
+          latest_tag=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $latest_tag"
+          
+          # v prefix'ini kaldır
+          latest_version=${latest_tag#v}
+          echo "Latest version: $latest_version"
+          
+          # Eğer manuel versiyon girildiyse onu kullan
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            new_version="${{ github.event.inputs.version }}"
+          else
+            # Son versiyonu parçalara ayır
+            IFS='.' read -r major minor patch <<< "$latest_version"
+          
+            # Patch versiyonunu arttır
+            new_patch=$((patch + 1))
+            new_version="$major.$minor.$new_patch"
+          fi
+          
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "New version will be: $new_version"
+
+      - name: Step 3 - Update version in pom.xml
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.new_version }}
           mvn versions:commit
 
-      - name: Step 3 - Import GPG Key
+      - name: Step 4 - Import GPG Key
         run: |
           echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
           echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
@@ -29,7 +55,7 @@ jobs:
           GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
           GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
 
-      - name: Step 4 - Set up Maven Central Repository
+      - name: Step 5 - Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
           java-version: '8'
@@ -40,9 +66,38 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Step 5 - Publish Package to Maven Central
+      - name: Step 6 - Publish Package to Maven Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: mvn clean deploy -P release -DskipTests --batch-mode
+
+      - name: Step 7 - Create Git Tag
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git tag -a v${{ steps.get_version.outputs.new_version }} -m "Release version ${{ steps.get_version.outputs.new_version }}"
+          git push origin v${{ steps.get_version.outputs.new_version }}
+
+      - name: Step 8 - Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.new_version }}
+          name: Release v${{ steps.get_version.outputs.new_version }}
+          body: |
+            ## 🚀 New Release v${{ steps.get_version.outputs.new_version }}
+            
+            ### 📦 Maven Central Coordinates
+            ```xml
+            <dependency>
+                <groupId>io.github.r4tylmz</groupId>
+                <artifactId>better-poi</artifactId>
+                <version>${{ steps.get_version.outputs.new_version }}</version>
+            </dependency>
+            ```
+            
+            * Available on Maven Central Repository
+          draft: true
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
