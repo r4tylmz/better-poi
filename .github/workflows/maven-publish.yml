@@ -14,9 +14,14 @@ jobs:
       - name: Step 1 - Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref_name }}  # Dynamically use branch name
+          ref: ${{ github.ref_name }}
 
-      - name: Step 2 - Import GPG Key
+      - name: Step 2 - Update version in pom.xml
+        run: |
+          mvn versions:set -DnewVersion=${{ github.event.inputs.version }}
+          mvn versions:commit
+
+      - name: Step 3 - Import GPG Key
         run: |
           echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
           echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import --no-tty --batch --yes
@@ -24,7 +29,7 @@ jobs:
           GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
           GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
 
-      - name: Step 3 - Set up Maven Central Repository
+      - name: Step 4 - Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
           java-version: '8'
@@ -35,9 +40,9 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Step 4 - Publish Package to Maven Central
+      - name: Step 5 - Publish Package to Maven Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: mvn clean deploy -P release -DskipTests --batch-mode -Drevision=${{ github.event.inputs.version }}
+        run: mvn clean deploy -P release -DskipTests --batch-mode
