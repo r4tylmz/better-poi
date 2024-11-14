@@ -3,12 +3,13 @@ package io.github.r4tylmz.betterpoi;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPExcelWorkbook;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.converters.LocalDateConverter;
+import io.github.r4tylmz.betterpoi.converters.LocalDateTimeConverter;
 import io.github.r4tylmz.betterpoi.enums.ExcelType;
 import io.github.r4tylmz.betterpoi.utils.CellUtil;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import io.github.r4tylmz.betterpoi.utils.ExcelUtils;
 import org.apache.commons.beanutils.ConvertUtilsBean2;
-import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,9 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +37,13 @@ import java.util.Map;
  */
 public class BPImporter<T extends BPExcelWorkbook> {
     private static final Logger logger = LoggerFactory.getLogger(BPImporter.class);
-    private final ConvertUtilsBean2 converter = new ConvertUtilsBean2();
+    private static final ConvertUtilsBean2 converter = new ConvertUtilsBean2();
+
+    static {
+        converter.register(new LocalDateConverter(), LocalDate.class);
+        converter.register(new LocalDateTimeConverter(), LocalDateTime.class);
+    }
+
     private Class<T> workbookClass;
     private BPMetadataHandler metadataHandler;
     private BPValidator bpValidator;
@@ -80,7 +88,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
                     final Cell cell = row.getCell(headerMap.get(header));
                     if (cell != null) {
                         final Class<?> type = columnsTypes.get(bpColumn.fieldName());
-                        final Object value = getCellValue(cell, type);
+                        final Object value = CellUtil.getCellValue(cell, type);
                         final Object converted = converter.convert(value, type);
                         PropertyUtils.setProperty(bean, bpColumn.fieldName(), converted);
                     }
@@ -91,69 +99,6 @@ public class BPImporter<T extends BPExcelWorkbook> {
             }
         }
         return beans;
-    }
-
-    /**
-     * Retrieves the value of a cell based on its type.
-     *
-     * @param cell     the cell to retrieve the value from
-     * @param cellType the type of the cell
-     * @return the value of the cell
-     */
-    private Object getCellValue(final Cell cell, final CellType cellType) {
-        final Object value;
-        switch (cellType) {
-            case NUMERIC:
-                final CellStyle style = cell.getCellStyle();
-                final int formatNo = style.getDataFormat();
-                final String formatString = style.getDataFormatString();
-                if (DateUtil.isADateFormat(formatNo, formatString)) {
-                    value = cell.getDateCellValue();
-                } else {
-                    value = cell.getNumericCellValue();
-                }
-                break;
-            case BOOLEAN:
-                value = cell.getBooleanCellValue();
-                break;
-            case STRING:
-                value = cell.getStringCellValue();
-                break;
-            case BLANK:
-                value = "";
-                break;
-            default:
-                final String msg = String.format("Cannot handle cell type: %s for cell: %s", cellType.name(), cell.getAddress());
-                logger.error(msg);
-                throw new IllegalStateException(msg);
-        }
-        return value;
-    }
-
-    /**
-     * Retrieves the value of a cell based on its type and the field type.
-     *
-     * @param cell  the cell to retrieve the value from
-     * @param field the field type
-     * @return the value of the cell
-     */
-    private Object getCellValue(final Cell cell, final Class<?> field) {
-        if (field.equals(Integer.class) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseInteger(cell.getStringCellValue());
-        } else if (field.equals(Double.class) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseDouble(cell.getStringCellValue());
-        } else if (field.equals(BigDecimal.class) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseBigDecimal(cell.getStringCellValue());
-        } else if (field.equals(Long.class) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseLong(cell.getStringCellValue());
-        } else if (field.equals(Float.class) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseFloat(cell.getStringCellValue());
-        } else if (field.equals(Boolean.class) && cell.getCellType() == CellType.STRING) {
-            return converter.convert(cell.getStringCellValue(), Boolean.class);
-        } else if (CellUtil.isDate(field) && cell.getCellType() == CellType.STRING) {
-            return CellUtil.parseDate(cell.getStringCellValue(), field);
-        }
-        return getCellValue(cell, cell.getCellType());
     }
 
     public List<String> getErrorMessageList() {
@@ -321,14 +266,12 @@ public class BPImporter<T extends BPExcelWorkbook> {
     private boolean isRowCompletelyEmpty(Row row, int colSize) {
         DataFormatter dataFormatter = new DataFormatter();
         for (int i = 0; i < colSize; i++) {
-            if (row.getCell(i) != null || dataFormatter.formatCellValue(row.getCell(i)).trim().isEmpty()) {
+            Cell cell = row.getCell(i);
+            if (cell != null && !dataFormatter.formatCellValue(cell).trim().isEmpty()) {
                 return false;
             }
         }
         return true;
     }
 
-    public void register(Converter converter, Class<?> clazz) {
-        this.converter.register(converter, clazz);
-    }
 }

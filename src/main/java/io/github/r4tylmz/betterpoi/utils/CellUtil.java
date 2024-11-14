@@ -2,10 +2,7 @@ package io.github.r4tylmz.betterpoi.utils;
 
 import org.apache.commons.beanutils.ConvertUtilsBean2;
 import org.apache.commons.beanutils.converters.DateConverter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -251,5 +248,52 @@ public class CellUtil {
                 field.equals(java.sql.Date.class) || field.equals(LocalDateTime.class);
     }
 
+    /**
+     * Retrieves the value of a cell based on its type.
+     *
+     * @param cell     the cell to retrieve the value from
+     * @param cellType the type of the cell
+     * @return the value of the cell
+     */
+    private static Object getCellValue(final Cell cell, final CellType cellType) {
+        final Object value;
+        switch (cellType) {
+            case NUMERIC:
+                final CellStyle style = cell.getCellStyle();
+                final int formatNo = style.getDataFormat();
+                final String formatString = style.getDataFormatString();
+                if (DateUtil.isADateFormat(formatNo, formatString)) {
+                    value = cell.getDateCellValue();
+                } else {
+                    value = cell.getNumericCellValue();
+                }
+                break;
+            case BOOLEAN:
+                value = cell.getBooleanCellValue();
+                break;
+            case STRING:
+                value = cell.getStringCellValue();
+                break;
+            case BLANK:
+                value = "";
+                break;
+            default:
+                final String msg = String.format("Cannot handle cell type: %s for cell: %s", cellType.name(), cell.getAddress());
+                logger.error(msg);
+                throw new IllegalStateException(msg);
+        }
+        return value;
+    }
+
+    /**
+     * Retrieves the value of a cell based on its type and the field type.
+     *
+     * @param cell  the cell to retrieve the value from
+     * @param field the field type
+     * @return the value of the cell
+     */
+    public static Object getCellValue(final Cell cell, final Class<?> field) {
+        return getCellValue(cell, cell.getCellType());
+    }
 
 }
