@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 import static org.junit.Assert.*;
 
 public class RequiredValidatorTest {
-    private static final String REQUIRED_MSG = "The column with the header [%s] is required and cannot be null or empty.";
+    private static final String REQUIRED_MSG = "Header [%s] is required and cannot be null or empty.";
     public RequiredValidator requiredValidator;
 
     private CellHolder getCellHolder(String value, boolean isRequired) {
