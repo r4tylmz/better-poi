@@ -14,7 +14,7 @@
 <dependency>
     <groupId>io.github.r4tylmz</groupId>
     <artifactId>better-poi</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
