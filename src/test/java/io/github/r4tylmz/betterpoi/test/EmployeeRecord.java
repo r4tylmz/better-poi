@@ -1,14 +1,15 @@
 package io.github.r4tylmz.betterpoi.test;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class EmployeeRecord {
     private String employeeId;
     private String employeeName;
-    private Double salary;
+    private BigDecimal salary;
     private String department;
     private Integer yearsOfService;
-    private Date hireDate;
+    private LocalDate hireDate;
 
     public String getDepartment() {
         return department;
@@ -34,19 +35,19 @@ public class EmployeeRecord {
         this.employeeName = employeeName;
     }
 
-    public Date getHireDate() {
+    public LocalDate getHireDate() {
         return hireDate;
     }
 
-    public void setHireDate(Date hireDate) {
+    public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
     }
 
-    public Double getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
 
-    public void setSalary(Double salary) {
+    public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
 
