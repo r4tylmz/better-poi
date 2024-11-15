@@ -9,6 +9,7 @@ import io.github.r4tylmz.betterpoi.enums.ExcelType;
 import io.github.r4tylmz.betterpoi.utils.CellUtil;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import io.github.r4tylmz.betterpoi.utils.ExcelUtils;
+import io.github.r4tylmz.betterpoi.utils.RowUtil;
 import org.apache.commons.beanutils.ConvertUtilsBean2;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -79,7 +80,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
         final List<Object> beans = new ArrayList<>();
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
-            if (isRowCompletelyEmpty(row, bpSheet.columns().length)) continue;
+            if (RowUtil.isRowEmpty(row)) continue;
             try {
                 final Object bean = bpSheet.type().newInstance();
                 final BPColumn[] bpColumns = bpSheet.columns();

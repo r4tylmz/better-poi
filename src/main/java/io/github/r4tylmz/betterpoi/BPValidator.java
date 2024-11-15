@@ -2,6 +2,7 @@ package io.github.r4tylmz.betterpoi;
 
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.utils.RowUtil;
 import io.github.r4tylmz.betterpoi.validation.CellValidatorManager;
 import io.github.r4tylmz.betterpoi.validation.ColValidatorManager;
 import io.github.r4tylmz.betterpoi.validation.RowValidatorManager;
@@ -215,6 +216,9 @@ public class BPValidator {
         sheetViolations.addAll(validateRows(sheet, bpSheet));
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
+            if (RowUtil.isRowEmpty(row)) {
+                continue;
+            }
             final BPColumn[] bpColumns = bpSheet.columns();
             for (int column = 0; column < bpColumns.length; column++) {
                 final BPColumn bpColumn = bpColumns[column];
