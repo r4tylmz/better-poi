@@ -25,7 +25,7 @@ public class RowValidatorManager implements ValidatorManager {
     public String getErrorMessage(Map<Integer, String> rowViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
         for (Map.Entry<Integer, String> entry : rowViolationMap.entrySet()) {
-            errorMessage.append("Row No: ").append(entry.getKey() + 1).append(" - Error: ").append(entry.getValue());
+            errorMessage.append(String.format("Row: %d | ERROR: %s", entry.getKey() + 1, entry.getValue()));
         }
         return errorMessage.toString();
     }

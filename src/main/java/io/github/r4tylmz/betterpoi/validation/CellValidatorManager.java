@@ -3,6 +3,7 @@ package io.github.r4tylmz.betterpoi.validation;
 import io.github.r4tylmz.betterpoi.BPFormatter;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.constraint.ConstraintFactory;
+import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import io.github.r4tylmz.betterpoi.validation.cell.CellHolder;
 import io.github.r4tylmz.betterpoi.validation.cell.CellValidator;
 import io.github.r4tylmz.betterpoi.validation.cell.PatternValidator;
@@ -64,7 +65,7 @@ public class CellValidatorManager {
             final CellHolder cellHolder = new CellHolder(cell, value, field, bpColumn);
             final String errorMessage = cellValidator.validate(cellHolder);
             if (errorMessage != null) {
-                String violation = String.format("Row No: %d - Column No: %d - Error: %s", cell.getRowIndex() + 1, cell.getColumnIndex() + 1, errorMessage);
+                String violation = String.format("Row: %d, Column: %s | ERROR: %s", cell.getRowIndex() + 1, ColUtil.getHeaderTitle(bpColumn), errorMessage);
                 violations.add(violation);
             }
         }
