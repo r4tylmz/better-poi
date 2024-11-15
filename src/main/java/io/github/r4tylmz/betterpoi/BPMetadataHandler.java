@@ -95,7 +95,6 @@ public class BPMetadataHandler {
         try {
             return beanClass.getDeclaredField(bpColumn.fieldName());
         } catch (ReflectiveOperationException e) {
-            logger.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
