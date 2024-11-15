@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DuplicateRowConstraintTest extends EmployeeWorkbookTest {
 
-    private final String errorMessage = "Duplicate row found at row %d";
+    private final String errorMessage = "Duplicate row found";
     private DuplicateRowConstraint duplicateRowConstraint;
 
     @Before

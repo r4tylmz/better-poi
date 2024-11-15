@@ -34,7 +34,7 @@ public class DuplicateRowConstraint implements RowConstraint {
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             if (row != null && rowSet.contains(hashRow(row, bpSheet.columns().length))) {
-                rowViolationMap.put(i, String.format("Duplicate row found at row %d", i + 1));
+                rowViolationMap.put(i, "Duplicate row found");
             } else {
                 rowSet.add(hashRow(row, bpSheet.columns().length));
             }
