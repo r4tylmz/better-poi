@@ -289,11 +289,105 @@ public class CellUtil {
      * Retrieves the value of a cell based on its type and the field type.
      *
      * @param cell  the cell to retrieve the value from
-     * @param field the field type
-     * @return the value of the cell
+     * @param field the field type to convert the cell value to
+     * @return the value of the cell converted to the appropriate type
      */
     public static Object getCellValue(final Cell cell, final Class<?> field) {
-        return getCellValue(cell, cell.getCellType());
+        if (cell == null) {
+            return null;
+        }
+
+        // Get the effective cell type (resolving formula if needed)
+        CellType cellType = cell.getCellType();
+        if (cellType == CellType.FORMULA) {
+            cellType = cell.getCachedFormulaResultType();
+        }
+
+        // If target field is String, return string representation regardless of cell type
+        if (field == String.class) {
+            switch (cellType) {
+                case NUMERIC:
+                    if (DateUtil.isCellDateFormatted(cell)) {
+                        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERNS.get(0));
+                        return sdf.format(cell.getDateCellValue());
+                    }
+                    cell.setCellType(CellType.STRING);
+                    return cell.getStringCellValue();
+                case BOOLEAN:
+                    cell.setCellType(CellType.STRING);
+                    return cell.getStringCellValue();
+                case STRING:
+                    return cell.getStringCellValue();
+                case ERROR:
+                    return "ERROR: " + cell.getErrorCellValue();
+                case BLANK:
+                default:
+                    return "";
+            }
+        }
+
+        // For non-String fields, handle based on cell type
+        switch (cellType) {
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell) && isDate(field)) {
+                    Date dateValue = cell.getDateCellValue();
+                    if (field == LocalDate.class) {
+                        return dateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    } else if (field == LocalDateTime.class) {
+                        return dateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    } else if (field == java.sql.Date.class) {
+                        return new java.sql.Date(dateValue.getTime());
+                    }
+                    return dateValue;
+                } else {
+                    double numericValue = cell.getNumericCellValue();
+                    if (field == Integer.class || field == int.class) {
+                        return (int) numericValue;
+                    } else if (field == Long.class || field == long.class) {
+                        return (long) numericValue;
+                    } else if (field == Float.class || field == float.class) {
+                        return (float) numericValue;
+                    } else if (field == BigDecimal.class) {
+                        return BigDecimal.valueOf(numericValue);
+                    } else if (field == Double.class || field == double.class) {
+                        return numericValue;
+                    } else if (field == Short.class || field == short.class) {
+                        return (short) numericValue;
+                    } else if (field == Byte.class || field == byte.class) {
+                        return (byte) numericValue;
+                    }
+                    return numericValue;
+                }
+            case BOOLEAN:
+                return cell.getBooleanCellValue();
+            case STRING:
+                String stringValue = cell.getStringCellValue();
+                if (field == Integer.class || field == int.class) {
+                    return parseInteger(stringValue);
+                } else if (field == Double.class || field == double.class) {
+                    return parseDouble(stringValue);
+                } else if (field == Long.class || field == long.class) {
+                    return parseLong(stringValue);
+                } else if (field == Float.class || field == float.class) {
+                    return parseFloat(stringValue);
+                } else if (field == BigDecimal.class) {
+                    return parseBigDecimal(stringValue);
+                } else if (isDate(field)) {
+                    return parseDate(stringValue, field);
+                } else if (field == Boolean.class || field == boolean.class) {
+                    return Boolean.valueOf(stringValue);
+                }
+                return stringValue;
+            case BLANK:
+                return null;
+            case ERROR:
+                logger.warn("Cell contains error: {}", cell.getErrorCellValue());
+                return null;
+            default:
+                String msg = String.format("Cannot handle cell type: %s for cell: %s", cellType.name(), cell.getAddress());
+                logger.error(msg);
+                throw new IllegalStateException(msg);
+        }
     }
 
 }
