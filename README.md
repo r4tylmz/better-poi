@@ -10,11 +10,10 @@
 ## Installation
 
 ```xml
-
 <dependency>
     <groupId>io.github.r4tylmz</groupId>
     <artifactId>better-poi</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
@@ -30,6 +29,9 @@ This extension is designed to simplify the usage of Apache POI for handling Exce
 - Supports custom validation for Excel files.
 - Allows custom constraints for Excel cells, columns and rows.
 - Provides pattern validation for Excel cells.
+- **NEW**: Internationalization (i18n) support with UTF-8 encoding.
+- **NEW**: Configurable options through BPOptions class.
+- **NEW**: Localized validation error messages in multiple languages.
 
 ## TO DO List
 
@@ -60,7 +62,6 @@ public class TestExcel {
 
 Define a Workbook class, annotate it with `@BPWorkbook`, and implement the `BPExcelWorkbook` interface.
 ```java
-
 @BPWorkbook
 public class TestWorkBook implements BPExcelWorkbook {
 
@@ -83,7 +84,6 @@ You can use predefined constraints for Excel cells, rows, and columns, or create
 class (`RowConstraint` for rows, `ColConstraint` for columns, and `CellValidator` for cells).
 
 ```java
-
 @BPWorkbook
 public class TestWorkBook implements BPExcelWorkbook {
 
@@ -104,12 +104,24 @@ public class TestWorkBook implements BPExcelWorkbook {
 }
 ```
 
-Read the Excel and get the corresponding workbook class.
+### Reading Excel Files
+
+**NEW**: Use BPOptions for configuration and localization support.
 
 ```java
 public class Test {
     public static void main(String[] args) {
-        final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, ExcelType.XLSX);
+        // Create options with default settings
+        BPOptions options = BPOptions.createDefault();
+        
+        // Or customize options
+        BPOptions customOptions = BPOptions.builder()
+                .withExcelType(ExcelType.XLSX)
+                .withLocale("tr") // Turkish locale
+                .withBundleName("messages")
+                .build();
+        
+        final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, customOptions);
         final InputStream inputStream = Files.newInputStream(new File("/your_source/file.xlsx").toPath());
         final TestWorkBook workbook = bpImporter.importExcel(inputStream);
 
@@ -119,10 +131,36 @@ public class Test {
 
         // Excel is now ready to be used as a Java object.
         List<TestExcel> testExcelList = workbook.getTestExcelList();
-
     }
 }
 ```
+
+### Localization Support
+
+**NEW**: The library now supports internationalization with UTF-8 encoding. Error messages are automatically localized based on the locale specified in BPOptions.
+
+```java
+// English locale (default)
+BPOptions englishOptions = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("en")
+        .build();
+
+// Turkish locale
+BPOptions turkishOptions = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        .build();
+
+// Custom bundle name
+BPOptions customBundleOptions = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("en")
+        .withBundleName("custom-messages")
+        .build();
+```
+
+### Export Excel Files
 
 Export Excel file from a list of objects.
 
@@ -134,7 +172,6 @@ public class Test {
         workbook.setTestExcelList(new ArrayList<>());
         final BPExporter bpExporter = new BPExporter(workbook);
         bpExporter.exportExcel(new File("/your_destination/file.xlsx"));
-
     }
 }
 ```
