@@ -32,10 +32,11 @@ This extension is designed to simplify the usage of Apache POI for handling Exce
 - **NEW**: Internationalization (i18n) support with UTF-8 encoding.
 - **NEW**: Configurable options through BPOptions class.
 - **NEW**: Localized validation error messages in multiple languages.
+- **NEW**: Comprehensive exception handling with detailed error information.
 
 ## TO DO List
 
-- [ ] Add exception handling
+- [x] Add exception handling
 - [ ] Add multi thread support for large files
 - [ ] Add support for CSV files
 - [ ] Add column data type constraint
@@ -132,6 +133,69 @@ public class Test {
         // Excel is now ready to be used as a Java object.
         List<TestExcel> testExcelList = workbook.getTestExcelList();
     }
+}
+```
+
+### Exception Handling
+
+**NEW**: The library now provides comprehensive exception handling with detailed error information and proper error codes.
+
+#### Exception Types
+
+- **BPException**: Base exception class for all Better POI exceptions
+- **BPImportException**: Thrown during import operations with sheet, row, and column information
+- **BPExportException**: Thrown during export operations with sheet and field information
+- **BPValidationException**: Thrown when validation fails with detailed error information
+- **BPConfigurationException**: Thrown for configuration errors
+
+#### Example: Handling Import Exceptions
+
+```java
+try {
+    final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
+    final TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+    // Process workbook...
+} catch (BPImportException e) {
+    System.err.println("Import failed: " + e.getMessage());
+    System.err.println("Error Code: " + e.getErrorCode());
+    if (e.getSheetName() != null) {
+        System.err.println("Sheet: " + e.getSheetName());
+    }
+    if (e.getRowNumber() != null) {
+        System.err.println("Row: " + e.getRowNumber());
+    }
+    if (e.getColumnNumber() != null) {
+        System.err.println("Column: " + e.getColumnNumber());
+    }
+} catch (BPValidationException e) {
+    System.err.println("Validation failed: " + e.getMessage());
+    for (BPValidationException.ValidationError error : e.getValidationErrors()) {
+        System.err.println("  - " + error.toString());
+    }
+} catch (BPConfigurationException e) {
+    System.err.println("Configuration error: " + e.getMessage());
+    System.err.println("Key: " + e.getConfigurationKey());
+    System.err.println("Value: " + e.getConfigurationValue());
+}
+```
+
+#### Example: Handling Export Exceptions
+
+```java
+try {
+    final BPExporter bpExporter = new BPExporter(workbook);
+    bpExporter.exportExcel("/path/to/output.xlsx");
+} catch (BPExportException e) {
+    System.err.println("Export failed: " + e.getMessage());
+    System.err.println("Error Code: " + e.getErrorCode());
+    if (e.getSheetName() != null) {
+        System.err.println("Sheet: " + e.getSheetName());
+    }
+    if (e.getFieldName() != null) {
+        System.err.println("Field: " + e.getFieldName());
+    }
+} catch (BPConfigurationException e) {
+    System.err.println("Configuration error: " + e.getMessage());
 }
 ```
 

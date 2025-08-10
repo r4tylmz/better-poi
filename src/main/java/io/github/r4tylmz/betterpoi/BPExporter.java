@@ -2,6 +2,8 @@ package io.github.r4tylmz.betterpoi;
 
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.exception.BPExportException;
+import io.github.r4tylmz.betterpoi.exception.BPConfigurationException;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -85,11 +88,15 @@ public class BPExporter {
      * @param file the file to which the workbook will be written
      */
     public void exportExcel(File file) {
+        if (file == null) {
+            throw new BPExportException("File cannot be null");
+        }
+        
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             exportExcel(fileOutputStream);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new BPExportException("Cannot create file: " + file.getAbsolutePath(), e);
         }
     }
 
@@ -99,11 +106,17 @@ public class BPExporter {
      * @param path the path where the Excel file will be written
      */
     public void exportExcel(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            throw new BPExportException("Path cannot be null or empty");
+        }
+        
         try {
             File file = new File(path);
             exportExcel(file);
+        } catch (BPExportException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BPExportException("Failed to export to path: " + path, e);
         }
     }
 
@@ -113,26 +126,42 @@ public class BPExporter {
      * @param outputStream the OutputStream to which the workbook will be written
      */
     public void exportExcel(OutputStream outputStream) {
+        if (outputStream == null) {
+            throw new BPExportException("Output stream cannot be null");
+        }
+        if (bpWorkbook == null) {
+            throw new BPConfigurationException("Workbook object cannot be null", "bpWorkbook", null);
+        }
+        
         try {
             workbook = new XSSFWorkbook();
             bpMetadataHandler = new BPMetadataHandler(bpWorkbook);
             bpFormatter = new BPFormatter(workbook);
             List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
+            
+            if (bpSheets.isEmpty()) {
+                throw new BPConfigurationException("No sheets found in workbook", "sheets", "0");
+            }
+            
             for (BPSheet bpSheet : bpSheets) {
                 Sheet sheet = createSheet(bpSheet);
                 List<?> values = bpMetadataHandler.getValues(bpWorkbook, bpSheet);
                 createRows(sheet, bpSheet, values);
             }
             workbook.write(outputStream);
+        } catch (BPConfigurationException e) {
+            throw e;
+        } catch (IOException e) {
+            throw new BPExportException("Failed to write workbook to output stream", e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BPExportException("Unexpected error during export", e);
         } finally {
             try {
                 if (workbook != null) {
                     workbook.close();
                 }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+            } catch (IOException e) {
+                logger.error("Failed to close workbook", e);
             }
         }
     }
@@ -148,8 +177,9 @@ public class BPExporter {
         try {
             return PropertyUtils.getProperty(bean, bpColumn.fieldName());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+            logger.error("Failed to get property: " + bpColumn.fieldName(), e);
+            throw new BPExportException("Failed to get property: " + bpColumn.fieldName(), 
+                                      null, bpColumn.fieldName(), e);
         }
     }
 }

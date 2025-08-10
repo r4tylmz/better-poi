@@ -1,11 +1,15 @@
 package io.github.r4tylmz.betterpoi;
 
 import io.github.r4tylmz.betterpoi.enums.ExcelType;
+import io.github.r4tylmz.betterpoi.exception.BPConfigurationException;
+import io.github.r4tylmz.betterpoi.exception.BPImportException;
+import io.github.r4tylmz.betterpoi.exception.BPValidationException;
 import io.github.r4tylmz.betterpoi.test.EmployeeWorkbook;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
@@ -68,8 +72,8 @@ public class BPImporterTest {
         InputStream inputStream = null;
         try {
             bpImporter.importExcel(inputStream);
-        } catch (Exception e) {
-            assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");
+        } catch (BPImportException e) {
+            assertEquals("Input stream cannot be null", e.getMessage());
         }
     }
 
@@ -78,9 +82,9 @@ public class BPImporterTest {
         String path = null;
         try {
             bpImporter.importExcel(path);
-            fail("Expected NullPointerException");
-        } catch (NullPointerException e) {
-            // Expected exception
+            fail("Expected BPImportException");
+        } catch (BPImportException e) {
+            assertEquals("Path cannot be null or empty", e.getMessage());
         }
     }
 
@@ -95,8 +99,10 @@ public class BPImporterTest {
                     .build();
             bpImporter = new BPImporter<>(null, options);
             bpImporter.importExcel(inputStream);
-        } catch (Exception e) {
-            assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");
+        } catch (BPConfigurationException e) {
+            assertEquals("Workbook class is not configured", e.getMessage());
+        } catch (IOException e) {
+            // Handle IOException from closing the stream
         }
     }
 
@@ -127,11 +133,13 @@ public class BPImporterTest {
     @Test
     public void testImportExcelWithError() {
         try (InputStream inputStream = getInputStream(FAKE_EMPLOYEE_DATA_ERROR_XLSX)) {
-            EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
-            assertNull(employeeWorkbook);
+            bpImporter.importExcel(inputStream);
+            fail("Expected BPValidationException");
+        } catch (BPValidationException e) {
+            assertEquals("Workbook validation failed", e.getMessage());
             assertFalse(bpImporter.getErrorMessageList().isEmpty());
-        } catch (Exception e) {
-            fail("Unexpected exception");
+        } catch (IOException e) {
+            // Handle IOException from closing the stream
         }
     }
 
@@ -168,13 +176,13 @@ public class BPImporterTest {
     }
 
     @Test
-    public void testImportExcelWithNullFile() {
+    public void importExcelWithNullFile() {
         File file = null;
         try {
             bpImporter.importExcel(file);
-            fail("Expected NullPointerException");
-        } catch (NullPointerException e) {
-            // Expected exception
+            fail("Expected BPImportException");
+        } catch (BPImportException e) {
+            assertEquals("File cannot be null", e.getMessage());
         }
     }
 
@@ -199,8 +207,10 @@ public class BPImporterTest {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
             bpImporter = new BPImporter<>(null, BPOptions.createDefault());
             bpImporter.importExcel(inputStream);
-        } catch (Exception e) {
-            assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");
+        } catch (BPConfigurationException e) {
+            assertEquals("Workbook class is not configured", e.getMessage());
+        } catch (IOException e) {
+            // Handle IOException from closing the stream
         }
     }
 

@@ -6,6 +6,9 @@ import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.converters.LocalDateConverter;
 import io.github.r4tylmz.betterpoi.converters.LocalDateTimeConverter;
 import io.github.r4tylmz.betterpoi.enums.ExcelType;
+import io.github.r4tylmz.betterpoi.exception.BPImportException;
+import io.github.r4tylmz.betterpoi.exception.BPConfigurationException;
+import io.github.r4tylmz.betterpoi.exception.BPValidationException;
 import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.CellUtil;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
@@ -149,7 +152,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
     private Workbook getWorkbook(InputStream inputStream) {
         try {
             if (excelType == null) {
-                throw new IllegalArgumentException("ExcelType must not be null");
+                throw new BPConfigurationException("ExcelType must not be null", "excelType", null);
             }
             if (excelType == ExcelType.XLS) {
                 logger.info("XLS file is not supported and will be converted to XLSX before processing");
@@ -158,10 +161,10 @@ public class BPImporter<T extends BPExcelWorkbook> {
             if (excelType == ExcelType.XLSX) {
                 return new XSSFWorkbook(inputStream);
             }
+            throw new BPConfigurationException("Unsupported Excel type: " + excelType, "excelType", excelType.name());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BPImportException("Failed to create workbook from input stream", e);
         }
-        return null;
     }
 
     public Class<T> getWorkbookClass() {
@@ -179,10 +182,20 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * @return the workbook object
      */
     public T importExcel(File file) {
+        if (file == null) {
+            throw new BPImportException("File cannot be null");
+        }
+        if (!file.exists()) {
+            throw new BPImportException("File does not exist: " + file.getAbsolutePath());
+        }
+        if (!file.canRead()) {
+            throw new BPImportException("File cannot be read: " + file.getAbsolutePath());
+        }
+        
         try (InputStream inputStream = Files.newInputStream(file.toPath())) {
             return importExcel(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BPImportException("Failed to read file: " + file.getAbsolutePath(), e);
         }
     }
 
@@ -193,10 +206,14 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * @return the workbook object
      */
     public T importExcel(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            throw new BPImportException("Path cannot be null or empty");
+        }
+        
         try (InputStream inputStream = Files.newInputStream(Paths.get(path))) {
             return importExcel(inputStream);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BPImportException("Failed to read file at path: " + path, e);
         }
     }
 
@@ -207,40 +224,53 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * @return the workbook object
      */
     public T importExcel(InputStream inputStream) {
-        if (inputStream == null || workbookClass == null) {
-            throw new IllegalArgumentException("inputStream or workbookClass must not be null");
+        if (inputStream == null) {
+            throw new BPImportException("Input stream cannot be null");
         }
+        if (workbookClass == null) {
+            throw new BPConfigurationException("Workbook class is not configured");
+        }
+        
         try {
             final T bpWorkBook = workbookClass.newInstance();
             workbook = getWorkbook(inputStream);
             bpValidator = new BPValidator(bpWorkBook, this.messageSourceService);
             metadataHandler = new BPMetadataHandler(bpWorkBook);
             final List<BPSheet> bpSheets = metadataHandler.getSheets();
+            
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
                     if (bpSheet.validate()) {
                         boolean isValid = bpValidator.validate(workbook, this.messageSourceService);
                         if (!isValid) {
                             logger.error("Errors found in the workbook: \n{}", getFormattedErrorMessage());
-                            return null;
+                            throw new BPValidationException("Workbook validation failed");
                         }
                     }
                     final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
+                    if (sheet == null) {
+                        throw new BPImportException("Sheet not found: " + bpSheet.sheetName(), 
+                                                  bpSheet.sheetName(), null, null);
+                    }
                     final List<?> beans = createObjects(sheet, bpSheet);
                     final Field field = metadataHandler.getField(bpSheet);
                     PropertyUtils.setProperty(bpWorkBook, field.getName(), beans);
                 }
             }
             return bpWorkBook;
+        } catch (BPValidationException | BPImportException e) {
+            throw e;
+        } catch (InstantiationException e) {
+            throw new BPConfigurationException("Failed to instantiate workbook class: " + workbookClass.getName(), e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BPImportException("Unexpected error during import", e);
         } finally {
             try {
                 if (workbook != null) {
                     workbook.close();
                 }
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                logger.error("Failed to close workbook", e);
             }
         }
     }
@@ -252,11 +282,17 @@ public class BPImporter<T extends BPExcelWorkbook> {
      * @return the workbook object
      */
     public T importExcelBase64(String fileAsBase64) {
+        if (fileAsBase64 == null || fileAsBase64.trim().isEmpty()) {
+            throw new BPImportException("Base64 string cannot be null or empty");
+        }
+        
         try {
             byte[] fileAsByteArray = java.util.Base64.getDecoder().decode(fileAsBase64);
             return importExcel(new java.io.ByteArrayInputStream(fileAsByteArray));
+        } catch (IllegalArgumentException e) {
+            throw new BPImportException("Invalid Base64 string format", e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BPImportException("Failed to decode Base64 string", e);
         }
     }
 
