@@ -1,8 +1,24 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 
 public class UserDefinedMaxLenValidator implements CellValidator {
+    private MessageSourceService messageSourceService;
+
+    public UserDefinedMaxLenValidator() {
+        // Default constructor
+    }
+
+    public UserDefinedMaxLenValidator(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
+    @Override
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     @Override
     public String validate(CellHolder cellHolder) {
         if (cellHolder == null
@@ -13,7 +29,7 @@ public class UserDefinedMaxLenValidator implements CellValidator {
         }
 
         if (cellHolder.getCellValue().length() > 10) {
-            return String.format("Column with header [%s] has a max length of 10 characters.", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
+            return this.messageSourceService.getMessage("error.userdefined.violation", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
         }
         return null;
     }

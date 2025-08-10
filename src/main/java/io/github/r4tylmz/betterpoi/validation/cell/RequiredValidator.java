@@ -1,5 +1,6 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 
 /**
@@ -7,6 +8,21 @@ import io.github.r4tylmz.betterpoi.utils.ColUtil;
  * This class validates that the cell value is not null or empty if the BPColumn annotation specifies it as required.
  */
 public class RequiredValidator implements CellValidator {
+    private MessageSourceService messageSourceService;
+
+    public RequiredValidator() {
+        // Default constructor
+    }
+
+    public RequiredValidator(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
+    @Override
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     /**
      * Validates the given cell holder.
      * Checks if the cell value is not null or empty if the BPColumn annotation specifies it as required.
@@ -19,6 +35,6 @@ public class RequiredValidator implements CellValidator {
         String cellValue = cellHolder.getCellValue();
         if (!cellHolder.getBpColumn().required()) return null;
         if (cellValue != null && !cellValue.isEmpty()) return null;
-        return String.format("Header [%s] is required and cannot be null or empty.", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
+        return messageSourceService.getMessage("required.validation.error", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
     }
 }

@@ -1,6 +1,8 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MultipleCellValidatorTest {
     List<CellValidator> cellValidators = new ArrayList<>();
+    public MessageSourceService messageSourceService;
 
     private CellHolder getCellHolder(String value, boolean isRequired) {
         CellHolder cellHolder = new CellHolder();
@@ -26,9 +29,10 @@ public class MultipleCellValidatorTest {
 
     @Before
     public void setUp() {
-        UserDefinedMaxLenValidator userDefinedMaxLenValidator = new UserDefinedMaxLenValidator();
-        RequiredValidator requiredValidator = new RequiredValidator();
-        PatternValidator patternValidator = new PatternValidator();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        UserDefinedMaxLenValidator userDefinedMaxLenValidator = new UserDefinedMaxLenValidator(messageSourceService);
+        RequiredValidator requiredValidator = new RequiredValidator(messageSourceService);
+        PatternValidator patternValidator = new PatternValidator(messageSourceService);
         cellValidators.add(userDefinedMaxLenValidator);
         cellValidators.add(requiredValidator);
         cellValidators.add(patternValidator);

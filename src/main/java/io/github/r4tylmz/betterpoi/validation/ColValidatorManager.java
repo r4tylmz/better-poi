@@ -3,6 +3,7 @@ package io.github.r4tylmz.betterpoi.validation;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.constraint.ColConstraint;
 import io.github.r4tylmz.betterpoi.constraint.ConstraintFactory;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.validation.col.ColHeaderMismatchConstraint;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -16,10 +17,12 @@ import java.util.Map;
  */
 public class ColValidatorManager implements ValidatorManager {
     private final List<ColConstraint> colValidators;
+    private final MessageSourceService messageSourceService;
 
-    public ColValidatorManager() {
+    public ColValidatorManager(MessageSourceService messageSourceService) {
         this.colValidators = new ArrayList<>();
-        this.colValidators.add(new ColHeaderMismatchConstraint());
+        this.messageSourceService = messageSourceService;
+        this.colValidators.add(new ColHeaderMismatchConstraint(messageSourceService));
     }
 
     /**
@@ -32,7 +35,8 @@ public class ColValidatorManager implements ValidatorManager {
     public String getErrorMessage(Map<Integer, String> colViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
         for (Map.Entry<Integer, String> entry : colViolationMap.entrySet()) {
-            errorMessage.append("Column No: ").append(entry.getKey() + 1).append(" - Error: ").append(entry.getValue()).append("\n");
+            errorMessage.append(messageSourceService.getMessage("error.column.violation", entry.getKey() + 1, entry.getValue()));
+            errorMessage.append("\n");
         }
         return errorMessage.toString();
     }
@@ -49,7 +53,7 @@ public class ColValidatorManager implements ValidatorManager {
     @Override
     public List<String> validate(Sheet sheet, BPSheet bpSheet) {
         final List<String> violations = new ArrayList<>();
-        this.colValidators.addAll(ConstraintFactory.getInstance().getColumnConstraints(bpSheet.colValidators()));
+        this.colValidators.addAll(ConstraintFactory.getInstance(messageSourceService).getColumnConstraints(bpSheet.colValidators()));
         for (ColConstraint validator : colValidators) {
             final Map<Integer, String> colViolations = validator.validate(sheet, bpSheet);
             if (!colViolations.isEmpty()) {

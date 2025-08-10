@@ -1,6 +1,8 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,13 +12,15 @@ import static org.mockito.Mockito.when;
 
 public class UserDefinedMaxLenValidatorTest {
 
+    public MessageSourceService messageSourceService;
     private UserDefinedMaxLenValidator userDefinedValidator;
     private CellHolder cellHolder;
     private BPColumn bpColumn;
 
     @Before
     public void setUp() {
-        userDefinedValidator = new UserDefinedMaxLenValidator();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        userDefinedValidator = new UserDefinedMaxLenValidator(this.messageSourceService);
         cellHolder = mock(CellHolder.class);
         bpColumn = mock(BPColumn.class);
     }

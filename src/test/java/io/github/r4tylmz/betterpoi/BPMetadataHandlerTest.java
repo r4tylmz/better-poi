@@ -4,6 +4,7 @@ import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.annotation.BPWorkbook;
 import io.github.r4tylmz.betterpoi.constraint.DefaultConstraint;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.validation.cell.CellHolder;
 import io.github.r4tylmz.betterpoi.validation.cell.CellValidator;
 import junit.framework.TestCase;
@@ -107,6 +108,12 @@ public class BPMetadataHandlerTest extends TestCase {
     // Custom Validator Test
     public void testCustomCellValidator() {
         class CustomCellValidator implements CellValidator {
+
+            @Override
+            public void setMessageSourceService(MessageSourceService messageSourceService) {
+                return;
+            }
+
             @Override
             public String validate(CellHolder cellHolder) {
                 return "";

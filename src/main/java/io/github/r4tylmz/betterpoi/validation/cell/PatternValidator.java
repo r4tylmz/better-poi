@@ -1,5 +1,7 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,6 +10,21 @@ import java.util.regex.Pattern;
  * This class uses regular expressions to validate the cell value against the pattern defined in the BPColumn annotation.
  */
 public class PatternValidator implements CellValidator {
+    private MessageSourceService messageSourceService;
+
+    public PatternValidator() {
+        // Default constructor
+    }
+
+    public PatternValidator(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
+    @Override
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     /**
      * Validates the given cell holder.
      * Checks if the cell value matches the pattern specified in the BPColumn annotation.
@@ -25,7 +42,7 @@ public class PatternValidator implements CellValidator {
         final Pattern validatorPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
         final Matcher matcher = validatorPattern.matcher(cellValue);
         if (!matcher.find()) {
-            return String.format("Cell value [%s] is not valid. Cell value must match with the pattern : %s", cellValue, pattern);
+            return messageSourceService.getMessage("pattern.validation.error", cellValue, pattern);
         }
         return null;
     }

@@ -2,6 +2,7 @@ package io.github.r4tylmz.betterpoi.validation.row;
 
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.constraint.RowConstraint;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,7 +14,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class DuplicateRowConstraint implements RowConstraint {
+    private MessageSourceService messageSourceService;
+
     DataFormatter dataFormatter = new DataFormatter();
+
+    public DuplicateRowConstraint() {
+    }
+
+    public DuplicateRowConstraint(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
 
     private String hashRow(Row row, int colSize) {
         StringBuilder sb = new StringBuilder();
@@ -34,7 +48,7 @@ public class DuplicateRowConstraint implements RowConstraint {
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row row = sheet.getRow(i);
             if (row != null && rowSet.contains(hashRow(row, bpSheet.columns().length))) {
-                rowViolationMap.put(i, "Duplicate row found");
+                rowViolationMap.put(i, messageSourceService.getMessage("duplicate.row.error"));
             } else {
                 rowSet.add(hashRow(row, bpSheet.columns().length));
             }

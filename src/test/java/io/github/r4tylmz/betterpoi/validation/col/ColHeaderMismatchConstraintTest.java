@@ -1,7 +1,9 @@
 package io.github.r4tylmz.betterpoi.validation.col;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.test.EmployeeWorkbookTest;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -14,12 +16,13 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class ColHeaderMismatchConstraintTest extends EmployeeWorkbookTest {
-    private final String errorMessage = "Expected header: %s but not found in headers %s";
+    public MessageSourceService messageSourceService;
     private ColHeaderMismatchConstraint colHeaderMismatchConstraint;
 
     @Before
     public void createColHeaderMismatch() throws Exception {
-        colHeaderMismatchConstraint = new ColHeaderMismatchConstraint();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        colHeaderMismatchConstraint = new ColHeaderMismatchConstraint(this.messageSourceService);
     }
 
     private void createSheetWithHeaders(String[] headers) {

@@ -1,6 +1,8 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -8,9 +10,8 @@ import org.mockito.Mockito;
 import static org.junit.Assert.*;
 
 public class RequiredValidatorTest {
-    private static final String REQUIRED_MSG = "Header [%s] is required and cannot be null or empty.";
     public RequiredValidator requiredValidator;
-
+    public MessageSourceService messageSourceService;
     private CellHolder getCellHolder(String value, boolean isRequired) {
         CellHolder cellHolder = new CellHolder();
         cellHolder.setCellValue(value);
@@ -23,7 +24,8 @@ public class RequiredValidatorTest {
 
     @Before
     public void setUp() throws Exception {
-        requiredValidator = new RequiredValidator();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        requiredValidator = new RequiredValidator(this.messageSourceService);
     }
 
     @Test
@@ -31,7 +33,7 @@ public class RequiredValidatorTest {
         CellHolder cellHolder = getCellHolder("", true);
         final String msg = requiredValidator.validate(cellHolder);
         assertNotNull(msg);
-        assertEquals(String.format(REQUIRED_MSG, cellHolder.getBpColumn().headerTitle()), msg);
+        assertEquals(messageSourceService.getMessage("required.validation.error", cellHolder.getBpColumn().headerTitle()), msg);
     }
 
     @Test
@@ -60,6 +62,6 @@ public class RequiredValidatorTest {
         CellHolder cellHolder = getCellHolder(null, true);
         final String msg = requiredValidator.validate(cellHolder);
         assertNotNull(msg);
-        assertEquals(String.format(REQUIRED_MSG, cellHolder.getBpColumn().headerTitle()), msg);
+        assertEquals(messageSourceService.getMessage("required.validation.error", cellHolder.getBpColumn().headerTitle()), msg);
     }
 }

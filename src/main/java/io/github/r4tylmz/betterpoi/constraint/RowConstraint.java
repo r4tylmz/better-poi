@@ -1,6 +1,7 @@
 package io.github.r4tylmz.betterpoi.constraint;
 
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  */
 public interface RowConstraint {
 
+    void setMessageSourceService(MessageSourceService messageSourceService);
     /**
      * Validates the row in the given sheet based on the specified BPSheet annotation.
      *

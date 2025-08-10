@@ -56,7 +56,7 @@ public class BPImporterTest {
     @Test
     public void importExcelWithNullExcelType() {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
-            bpImporter = new BPImporter<>(EmployeeWorkbook.class, null);
+            bpImporter = new BPImporter<>(EmployeeWorkbook.class, BPOptions.createDefault());
             bpImporter.importExcel(inputStream);
         } catch (Exception e) {
             assertEquals(e.getMessage(), "java.lang.IllegalArgumentException: ExcelType must not be null");
@@ -87,7 +87,13 @@ public class BPImporterTest {
     @Test
     public void importExcelWithNullWorkbookClass() {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
-            bpImporter = new BPImporter<>(null, ExcelType.XLSX);
+            BPOptions options = BPOptions
+                    .builder()
+                    .withExcelType(ExcelType.XLSX)
+                    .withBundleName("messages")
+                    .withLocale("tr")
+                    .build();
+            bpImporter = new BPImporter<>(null, options);
             bpImporter.importExcel(inputStream);
         } catch (Exception e) {
             assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");
@@ -103,7 +109,13 @@ public class BPImporterTest {
 
     @Before
     public void setUp() throws Exception {
-        bpImporter = new BPImporter<>(EmployeeWorkbook.class, ExcelType.XLSX);
+        BPOptions options = BPOptions
+                .builder()
+                .withExcelType(ExcelType.XLSX)
+                .withBundleName("messages")
+                .withLocale("tr")
+                .build();
+        bpImporter = new BPImporter<>(EmployeeWorkbook.class, options);
     }
 
     @Test
@@ -169,7 +181,13 @@ public class BPImporterTest {
     @Test
     public void testImportExcelWithNullWorkbookClassAndNotValidExcelType() {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
-            bpImporter = new BPImporter<>(EmployeeWorkbook.class, ExcelType.XLS);
+            BPOptions options = BPOptions
+                    .builder()
+                    .withExcelType(ExcelType.XLS)
+                    .withBundleName("messages")
+                    .withLocale("tr")
+                    .build();
+            bpImporter = new BPImporter<>(EmployeeWorkbook.class, options);
             bpImporter.importExcel(inputStream);
         } catch (Exception e) {
             assertNotNull(e);
@@ -179,7 +197,7 @@ public class BPImporterTest {
     @Test
     public void testImportExcelWithNullWorkbookClassAndNullExcelType() {
         try (InputStream inputStream = getInputStream(RESOURCE_FAKE_EMPLOYEE_DATA_XLSX)) {
-            bpImporter = new BPImporter<>(null, null);
+            bpImporter = new BPImporter<>(null, BPOptions.createDefault());
             bpImporter.importExcel(inputStream);
         } catch (Exception e) {
             assertEquals(e.getMessage(), "inputStream or workbookClass must not be null");

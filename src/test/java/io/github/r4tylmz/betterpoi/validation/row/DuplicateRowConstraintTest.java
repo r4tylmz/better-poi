@@ -1,7 +1,9 @@
 package io.github.r4tylmz.betterpoi.validation.row;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.test.EmployeeWorkbookTest;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -15,13 +17,13 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class DuplicateRowConstraintTest extends EmployeeWorkbookTest {
-
-    private final String errorMessage = "Duplicate row found";
+    public MessageSourceService messageSourceService;
     private DuplicateRowConstraint duplicateRowConstraint;
 
     @Before
     public void createRowDuplicateConstraint() throws Exception {
-        duplicateRowConstraint = new DuplicateRowConstraint();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        duplicateRowConstraint = new DuplicateRowConstraint(this.messageSourceService);
     }
 
     private void createSheetWithHeaders(String[] headers) {
@@ -64,7 +66,7 @@ public class DuplicateRowConstraintTest extends EmployeeWorkbookTest {
 
         Map<Integer, String> errorMap = duplicateRowConstraint.validate(sheet, bpSheet);
         assertEquals(1, errorMap.size());
-        assertEquals(String.format(errorMessage, 3), errorMap.get(2));
+        assertEquals(messageSourceService.getMessage("duplicate.row.error"), errorMap.get(2));
     }
 
     @Test

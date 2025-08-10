@@ -3,6 +3,7 @@ package io.github.r4tylmz.betterpoi.validation;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.constraint.ConstraintFactory;
 import io.github.r4tylmz.betterpoi.constraint.RowConstraint;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.ArrayList;
@@ -15,6 +16,12 @@ import java.util.Map;
  */
 public class RowValidatorManager implements ValidatorManager {
 
+    private final MessageSourceService messageSourceService;
+
+    public RowValidatorManager(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     /**
      * Retrieves the error message for the specified row violations.
      *
@@ -25,7 +32,7 @@ public class RowValidatorManager implements ValidatorManager {
     public String getErrorMessage(Map<Integer, String> rowViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
         for (Map.Entry<Integer, String> entry : rowViolationMap.entrySet()) {
-            errorMessage.append(String.format("Row: %d | ERROR: %s", entry.getKey() + 1, entry.getValue()));
+            errorMessage.append(messageSourceService.getMessage("error.row.violation", entry.getValue()));
         }
         return errorMessage.toString();
     }
@@ -43,7 +50,7 @@ public class RowValidatorManager implements ValidatorManager {
         final List<String> violations = new ArrayList<>();
         final Class<? extends RowConstraint>[] validators = bpSheet.rowValidators();
         for (Class<? extends RowConstraint> validatorClass : validators) {
-            final RowConstraint validator = ConstraintFactory.getInstance().getRowConstraint(validatorClass);
+            final RowConstraint validator = ConstraintFactory.getInstance(messageSourceService).getRowConstraint(validatorClass);
             final Map<Integer, String> rowViolations = validator.validate(sheet, bpSheet);
             if (!rowViolations.isEmpty()) {
                 violations.add(getErrorMessage(rowViolations));

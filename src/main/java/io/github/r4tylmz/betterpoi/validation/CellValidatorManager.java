@@ -3,6 +3,7 @@ package io.github.r4tylmz.betterpoi.validation;
 import io.github.r4tylmz.betterpoi.BPFormatter;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.constraint.ConstraintFactory;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import io.github.r4tylmz.betterpoi.validation.cell.CellHolder;
 import io.github.r4tylmz.betterpoi.validation.cell.CellValidator;
@@ -24,17 +25,19 @@ import java.util.Set;
 public class CellValidatorManager {
     private final List<CellValidator> cellValidators = new ArrayList<>();
     private final BPFormatter formatter;
-
+    private final MessageSourceService messageSourceService;
     /**
      * Constructor to initialize the CellValidatorManager with a formatter.
      * Adds default validators to the list.
      *
      * @param formatter the formatter to use for cell value formatting
+     * @param messageSourceService the service for retrieving localized messages
      */
-    public CellValidatorManager(BPFormatter formatter) {
+    public CellValidatorManager(BPFormatter formatter, MessageSourceService messageSourceService) {
         this.formatter = formatter;
-        cellValidators.add(new RequiredValidator());
-        cellValidators.add(new PatternValidator());
+        this.messageSourceService = messageSourceService;
+        cellValidators.add(new RequiredValidator(messageSourceService));
+        cellValidators.add(new PatternValidator(messageSourceService));
     }
 
     /**
@@ -60,12 +63,12 @@ public class CellValidatorManager {
     public Set<String> validate(Cell cell, BPColumn bpColumn, Field field) {
         final Set<String> violations = new HashSet<>();
         final String value = getValue(cell);
-        this.cellValidators.addAll(ConstraintFactory.getInstance().getCellValidators(bpColumn.cellValidators()));
+        this.cellValidators.addAll(ConstraintFactory.getInstance(messageSourceService).getCellValidators(bpColumn.cellValidators()));
         for (CellValidator cellValidator : cellValidators) {
             final CellHolder cellHolder = new CellHolder(cell, value, field, bpColumn);
             final String errorMessage = cellValidator.validate(cellHolder);
             if (errorMessage != null) {
-                String violation = String.format("Row: %d, Column: %s | ERROR: %s", cell.getRowIndex() + 1, ColUtil.getHeaderTitle(bpColumn), errorMessage);
+                String violation = messageSourceService.getMessage("error.row.column.violation", ColUtil.getHeaderTitle(bpColumn), errorMessage);
                 violations.add(violation);
             }
         }

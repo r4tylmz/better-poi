@@ -6,6 +6,7 @@ import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.converters.LocalDateConverter;
 import io.github.r4tylmz.betterpoi.converters.LocalDateTimeConverter;
 import io.github.r4tylmz.betterpoi.enums.ExcelType;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.CellUtil;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import io.github.r4tylmz.betterpoi.utils.ExcelUtils;
@@ -39,6 +40,8 @@ import java.util.Map;
 public class BPImporter<T extends BPExcelWorkbook> {
     private static final Logger logger = LoggerFactory.getLogger(BPImporter.class);
     private static final ConvertUtilsBean2 converter = new ConvertUtilsBean2();
+    private MessageSourceService messageSourceService;
+
 
     static {
         converter.register(new LocalDateConverter(), LocalDate.class);
@@ -54,16 +57,16 @@ public class BPImporter<T extends BPExcelWorkbook> {
     public BPImporter() {
     }
 
-
     /**
-     * Constructor for BPImporter.
+     * Constructs a BPImporter with the specified workbook class and options.
      *
      * @param workbookClass the class that extends BPExcelWorkbook
-     * @param excelType     the type of Excel file to import
+     * @param options       the options for the importer, including Excel type and locale
      */
-    public BPImporter(Class<T> workbookClass, ExcelType excelType) {
-        this.excelType = excelType;
+    public BPImporter(Class<T> workbookClass, BPOptions options) {
         this.workbookClass = workbookClass;
+        this.excelType = options.getExcelType();
+        this.messageSourceService = new MessageSourceService(options);
     }
 
 
@@ -210,13 +213,13 @@ public class BPImporter<T extends BPExcelWorkbook> {
         try {
             final T bpWorkBook = workbookClass.newInstance();
             workbook = getWorkbook(inputStream);
-            bpValidator = new BPValidator(bpWorkBook);
+            bpValidator = new BPValidator(bpWorkBook, this.messageSourceService);
             metadataHandler = new BPMetadataHandler(bpWorkBook);
             final List<BPSheet> bpSheets = metadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
                     if (bpSheet.validate()) {
-                        boolean isValid = bpValidator.validate(workbook);
+                        boolean isValid = bpValidator.validate(workbook, this.messageSourceService);
                         if (!isValid) {
                             logger.error("Errors found in the workbook: \n{}", getFormattedErrorMessage());
                             return null;

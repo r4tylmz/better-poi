@@ -2,6 +2,7 @@ package io.github.r4tylmz.betterpoi;
 
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.RowUtil;
 import io.github.r4tylmz.betterpoi.validation.CellValidatorManager;
 import io.github.r4tylmz.betterpoi.validation.ColValidatorManager;
@@ -27,23 +28,31 @@ import java.util.Set;
  */
 public class BPValidator {
     private static final Logger logger = LoggerFactory.getLogger(BPValidator.class);
-    private CellValidatorManager cellValidatorManager;
     private Class<?> workBookClass;
     private BPMetadataHandler bpMetadataHandler;
     private final ArrayList<String> errorMessages = new ArrayList<>();
-    private final RowValidatorManager rowValidatorManager = new RowValidatorManager();
-    private final ColValidatorManager colValidatorManager = new ColValidatorManager();
+    private final RowValidatorManager rowValidatorManager;
+    private final ColValidatorManager colValidatorManager;
+    private MessageSourceService messageSourceService;
+    private CellValidatorManager cellValidatorManager;
 
     /**
      * Constructor for BPValidator.
      *
      * @param workbook the workbook to validate
+     * @param messageSourceService the service for retrieving localized messages
      */
-    public BPValidator(Object workbook) {
+    public BPValidator(Object workbook, MessageSourceService messageSourceService) {
         if (workbook == null) {
             throw new IllegalArgumentException("workbook can't be null");
         }
+        if (messageSourceService == null) {
+            throw new IllegalArgumentException("messageSourceService must not be null");
+        }
+        this.messageSourceService = messageSourceService;
         this.workBookClass = workbook.getClass();
+        this.rowValidatorManager = new RowValidatorManager(messageSourceService);
+        this.colValidatorManager = new ColValidatorManager(messageSourceService);
     }
 
 
@@ -86,7 +95,7 @@ public class BPValidator {
     private boolean isSheetExist(Workbook workbook, final BPSheet bpSheet) {
         for (Sheet sheet : workbook) {
             if (sheet == null || (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName()))) {
-                errorMessages.add("Unable to find sheet with name: " + bpSheet.sheetName());
+                errorMessages.add(messageSourceService.getMessage("sheet.not.found.error", bpSheet.sheetName()));
                 return false;
             }
         }
@@ -97,20 +106,22 @@ public class BPValidator {
      * Validates the given Excel workbook.
      *
      * @param workbook the workbook to validate
+     * @param messageSourceService the service for retrieving localized messages
      * @return true if the workbook is valid, false otherwise
      * @throws IllegalArgumentException if workBookClass is null
      * @throws RuntimeException if an exception occurs during validation
      */
-    public boolean validate(Workbook workbook) {
+    public boolean validate(Workbook workbook, MessageSourceService messageSourceService) {
         if (workBookClass == null) {
             throw new IllegalArgumentException("WorkBookClass must not be null");
         }
 
         final List<String> violations = new ArrayList<>();
         bpMetadataHandler = new BPMetadataHandler(workBookClass);
+        this.messageSourceService = messageSourceService;
         try {
             final BPFormatter bpFormatter = new BPFormatter(workbook);
-            cellValidatorManager = new CellValidatorManager(bpFormatter);
+            cellValidatorManager = new CellValidatorManager(bpFormatter, messageSourceService);
             final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
@@ -155,7 +166,7 @@ public class BPValidator {
         try {
             workbook = new XSSFWorkbook(inputStream);
             final BPFormatter bpFormatter = new BPFormatter(workbook);
-            cellValidatorManager = new CellValidatorManager(bpFormatter);
+            this.cellValidatorManager = new CellValidatorManager(bpFormatter, this.messageSourceService);
             final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
@@ -227,7 +238,7 @@ public class BPValidator {
                     cell = row.createCell(column);
                 }
                 final Field field = bpMetadataHandler.getField(bpSheet);
-                CellValidatorManager cellValidatorManager = new CellValidatorManager(new BPFormatter(sheet.getWorkbook()));
+                CellValidatorManager cellValidatorManager = new CellValidatorManager(new BPFormatter(sheet.getWorkbook()), this.messageSourceService);
                 sheetViolations.addAll(cellValidatorManager.validate(cell, bpColumn, field));
             }
         }

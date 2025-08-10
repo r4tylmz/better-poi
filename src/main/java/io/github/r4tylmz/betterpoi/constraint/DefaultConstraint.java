@@ -1,6 +1,7 @@
 package io.github.r4tylmz.betterpoi.constraint;
 
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.validation.cell.CellHolder;
 import io.github.r4tylmz.betterpoi.validation.cell.CellValidator;
 import org.apache.poi.ss.usermodel.Cell;
@@ -47,5 +48,10 @@ public class DefaultConstraint implements Constraint, ColConstraint, RowConstrai
     @Override
     public String validate(CellHolder cellHolder) {
         return null;
+    }
+
+    @Override
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        return;
     }
 }

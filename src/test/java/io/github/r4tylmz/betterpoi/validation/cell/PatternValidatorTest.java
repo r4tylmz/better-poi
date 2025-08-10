@@ -1,6 +1,8 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
+import io.github.r4tylmz.betterpoi.BPOptions;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -8,12 +10,13 @@ import org.mockito.Mockito;
 import static org.junit.Assert.*;
 
 public class PatternValidatorTest {
-    private static final String REQUIRED_MSG = "Cell value [%s] is not valid. Cell value must match with the pattern : %s";
     public PatternValidator patternValidator;
+    public MessageSourceService messageSourceService;
 
     @Before
     public void createPatternValidator() throws Exception {
-        patternValidator = new PatternValidator();
+        this.messageSourceService = new MessageSourceService(BPOptions.createDefault());
+        patternValidator = new PatternValidator(messageSourceService);
     }
 
     private CellHolder getCellHolder(String value, String pattern) {
@@ -51,7 +54,7 @@ public class PatternValidatorTest {
         CellHolder cellHolder = getCellHolder("test value", "xxxx");
         final String msg = patternValidator.validate(cellHolder);
         assertNotNull(msg);
-        assertEquals(String.format(REQUIRED_MSG, cellHolder.getCellValue(), cellHolder.getBpColumn().pattern()), msg);
+        assertEquals(messageSourceService.getMessage("pattern.validation.error", cellHolder.getCellValue(), cellHolder.getBpColumn().pattern()), msg);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package io.github.r4tylmz.betterpoi.constraint;
 
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.validation.cell.CellValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 public class ConstraintFactory {
     final static Logger logger = LoggerFactory.getLogger(ConstraintFactory.class);
+    private MessageSourceService messageSourceService;
 
     /**
      * Singleton instance of ConstraintFactory.
@@ -22,16 +24,53 @@ public class ConstraintFactory {
     private ConstraintFactory() {
     }
 
+    private ConstraintFactory(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     /**
      * Returns the singleton instance of ConstraintFactory.
-     *
+     * @param messageSourceService the service for retrieving localized messages
      * @return the singleton instance of ConstraintFactory
      */
-    public static ConstraintFactory getInstance() {
+    public static ConstraintFactory getInstance(MessageSourceService messageSourceService) {
         if (instance == null) {
-            instance = new ConstraintFactory();
+            instance = new ConstraintFactory(messageSourceService);
         }
         return instance;
+    }
+
+    /**
+     * Creates an instance of the specified cell validator class.
+     *
+     * @param validatorClass the class of the cell validator to be created
+     * @return an instance of the specified cell validator class
+     * @throws RuntimeException if an error occurs during instantiation
+     */
+    public CellValidator getCellValidator(Class<? extends CellValidator> validatorClass) {
+        try {
+            CellValidator cellValidator = validatorClass.newInstance();
+            cellValidator.setMessageSourceService(messageSourceService);
+            return cellValidator;
+        } catch (ReflectiveOperationException e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Creates a list of instances of the specified cell validator classes.
+     *
+     * @param validatorClasses an array of cell validator classes to be created
+     * @return a list of instances of the specified cell validator classes
+     * @throws RuntimeException if an error occurs during instantiation
+     */
+    public List<CellValidator> getCellValidators(Class<? extends CellValidator>[] validatorClasses) {
+        List<CellValidator> cellValidators = new ArrayList<>();
+        for (Class<? extends CellValidator> validatorClass : validatorClasses) {
+            cellValidators.add(getCellValidator(validatorClass));
+        }
+        return cellValidators;
     }
 
     /**
@@ -43,7 +82,9 @@ public class ConstraintFactory {
      */
     public ColConstraint getColumnConstraint(Class<? extends ColConstraint> constraintClass) {
         try {
-            return constraintClass.newInstance();
+            ColConstraint colConstraint = constraintClass.newInstance();
+            colConstraint.setMessageSourceService(messageSourceService);
+            return colConstraint;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -58,16 +99,11 @@ public class ConstraintFactory {
      * @throws RuntimeException if an error occurs during instantiation
      */
     public List<ColConstraint> getColumnConstraints(Class<? extends ColConstraint>[] constraintClasses) {
-        try {
-            List<ColConstraint> constraints = new ArrayList<>();
-            for (Class<? extends ColConstraint> constraintClass : constraintClasses) {
-                constraints.add(constraintClass.newInstance());
-            }
-            return constraints;
-        } catch (ReflectiveOperationException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+        List<ColConstraint> constraints = new ArrayList<>();
+        for (Class<? extends ColConstraint> constraintClass : constraintClasses) {
+            constraints.add(getColumnConstraint(constraintClass));
         }
+        return constraints;
     }
 
     /**
@@ -79,7 +115,9 @@ public class ConstraintFactory {
      */
     public Constraint getConstraint(Class<? extends Constraint> constraintClass) {
         try {
-            return constraintClass.newInstance();
+            Constraint constraint = constraintClass.newInstance();
+            constraint.setMessageSourceService(messageSourceService);
+            return constraint;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -95,43 +133,9 @@ public class ConstraintFactory {
      */
     public RowConstraint getRowConstraint(Class<? extends RowConstraint> constraintClass) {
         try {
-            return constraintClass.newInstance();
-        } catch (ReflectiveOperationException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Creates an instance of the specified cell validator class.
-     *
-     * @param validatorClass the class of the cell validator to be created
-     * @return an instance of the specified cell validator class
-     * @throws RuntimeException if an error occurs during instantiation
-     */
-    public CellValidator getCellValidator(Class<? extends CellValidator> validatorClass) {
-        try {
-            return validatorClass.newInstance();
-        } catch (ReflectiveOperationException e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Creates a list of instances of the specified cell validator classes.
-     *
-     * @param validatorClasses an array of cell validator classes to be created
-     * @return a list of instances of the specified cell validator classes
-     * @throws RuntimeException if an error occurs during instantiation
-     */
-    public List<CellValidator> getCellValidators(Class<? extends CellValidator>[] validatorClasses) {
-        try {
-            List<CellValidator> cellValidators = new ArrayList<>();
-            for (Class<? extends CellValidator> validatorClass : validatorClasses) {
-                cellValidators.add(validatorClass.newInstance());
-            }
-            return cellValidators;
+            RowConstraint rowConstraint = constraintClass.newInstance();
+            rowConstraint.setMessageSourceService(messageSourceService);
+            return rowConstraint;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

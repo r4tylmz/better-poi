@@ -3,6 +3,7 @@ package io.github.r4tylmz.betterpoi.validation.col;
 import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.constraint.ColConstraint;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -18,7 +19,11 @@ import java.util.*;
 public class ColHeaderMismatchConstraint implements ColConstraint {
     private final List<String> colHeaders = new ArrayList<>();
     private final DataFormatter dataFormatter = new DataFormatter();
+    private MessageSourceService messageSourceService;
 
+    public ColHeaderMismatchConstraint(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
     /**
      * Retrieves the column headers from the given sheet.
      * If the headers have already been retrieved, it returns the cached headers.
@@ -46,6 +51,11 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
         return Collections.unmodifiableList(colHeaders);
     }
 
+    @Override
+    public void setMessageSourceService(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
     /**
      * Validates the columns in the given sheet based on the specified BPSheet annotation.
      * Checks if the actual headers in the sheet match the expected headers defined in the BPSheet annotation.
@@ -70,7 +80,7 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
             String expectedHeader = ColUtil.getHeaderTitle(bpColumn);
 
             if (!colHeaders.contains(expectedHeader)) {
-                String violation = String.format("Expected header: %s but not found in headers %s", expectedHeader, colHeaders);
+                String violation = messageSourceService.getMessage("header.mismatch.error", expectedHeader, colHeaders);
                 violationMap.put(colNo, violation);
             }
         }
