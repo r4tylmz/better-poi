@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AIAssistantCustomInstructionsStorage">
+    <option name="instructions">
+      <map>
+        <entry key="AIAssistant.VCS.GenerateCommitMessage">
+          <value>
+            <AIAssistantStoredInstruction>
+              <option name="actionId" value="AIAssistant.VCS.GenerateCommitMessage" />
+              <option name="content" value="Generate Git commit messages using the Conventional Commits specification. For each commit type (feat, fix, docs, style, refactor, test, chore), ensure the message reflects the purpose and scope of the change:&#10;&#10;&#9;1.&#9;feat: For introducing new features or functionality.&#10;&#9;2.&#9;fix: For resolving bugs or issues.&#10;&#9;3.&#9;docs: For documentation changes that do not affect code behavior.&#10;&#9;4.&#9;style: For code style updates (e.g., formatting, linting) without changing functionality.&#10;&#9;5.&#9;refactor: For restructuring code without changing its behavior.&#10;&#9;6.&#9;test: For adding or updating tests.&#10;&#9;7.&#9;chore: For maintenance tasks (e.g., dependency updates, CI/CD changes).&#10;&#10;Each message should clearly describe what was changed and why, using concise and action-oriented language." />
+            </AIAssistantStoredInstruction>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="10" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9de94625-7d95-462b-9ad0-ea7cb87c8c4f" name="Changes" comment="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="JUnit3 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;r4tylmz&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/r4tylmz/better-poi.git&quot;,
+    &quot;accountId&quot;: &quot;5399d828-d006-4b3d-8ae3-97e7c78e9816&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2mQQ4cY7E7ndkTteVtFxTFaTeG6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Debug",
+    "JUnit.All in better-poi.executor": "Run",
+    "JUnit.BPExporterTest.executor": "Run",
+    "JUnit.BPImporterTest.executor": "Run",
+    "JUnit.BPImporterTest.getWorkbookClass.executor": "Run",
+    "JUnit.BPImporterTest.importExcelWithEmptyPath.executor": "Run",
+    "JUnit.BPImporterTest.importExcelWithEmptyPathThrowsIOException.executor": "Run",
+    "JUnit.BPImporterTest.importExcelWithInputStream.executor": "Debug",
+    "JUnit.BPImporterTest.importExcelWithNullExcelType.executor": "Debug",
+    "JUnit.BPImporterTest.importExcelWithNullInputStream.executor": "Run",
+    "JUnit.BPImporterTest.importExcelWithNullPath.executor": "Debug",
+    "JUnit.BPImporterTest.importExcelWithNullWorkbookClass.executor": "Run",
+    "JUnit.BPImporterTest.importExcelWithValidPath.executor": "Debug",
+    "JUnit.BPImporterTest.setWorkbookClass.executor": "Run",
+    "JUnit.BPImporterTest.testImport.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithError.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithGeneralFormat (1).executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithGeneralFormat.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithNoErrors.executor": "Run",
+    "JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNotValidExcelType.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithValidBase64.executor": "Debug",
+    "JUnit.BPImporterTest.testImportExcelWithValidFile.executor": "Run",
+    "JUnit.BPImporterTest.testImportWithInvalidPath.executor": "Run",
+    "JUnit.BPMetadataHandlerTest.executor": "Run",
+    "JUnit.BPValidatorTest.executor": "Run",
+    "JUnit.ColHeaderMismatchConstraintTest.executor": "Run",
+    "JUnit.DefaultConstraintTest.executor": "Debug",
+    "JUnit.DefaultConstraintTest.testValidate_cellEmpty.executor": "Debug",
+    "JUnit.DuplicateRowConstraintTest.executor": "Debug",
+    "JUnit.ExcelUtilsTest.executor": "Run",
+    "JUnit.MultipleCellValidatorTest.executor": "Debug",
+    "JUnit.MultipleCellValidatorTest.testValidate_emptyValue.executor": "Debug",
+    "JUnit.MultipleCellValidatorTest.testValidate_pattern_NotMatch_9Chars.executor": "Run",
+    "JUnit.MultipleCellValidatorTest.testValidate_pattern_notMatch_10Chars_required.executor": "Debug",
+    "JUnit.PatternValidatorTest.executor": "Run",
+    "JUnit.PatternValidatorTest.validate_datePatternForDateField.executor": "Run",
+    "JUnit.PatternValidatorTest.validate_datePatternForLocalDateField.executor": "Run",
+    "JUnit.PatternValidatorTest.validate_datePatternForNonDateField.executor": "Debug",
+    "JUnit.RequiredValidatorTest.executor": "Debug",
+    "JUnit.UserDefinedMaxLenValidatorTest.executor": "Run",
+    "JUnit.UserDefinedValidatorTest.executor": "Run",
+    "JUnit.java in better-poi.executor": "Debug",
+    "Maven.better-poi [clean,install] (11).executor": "Run",
+    "Maven.better-poi [clean,install].executor": "Run",
+    "Maven.better-poi [compile].executor": "Run",
+    "Maven.better-poi [validate].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "ToolWindow.GitHub Copilot Chat.ShowToolbar": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit3",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3": "",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/ylmz/IdeaProjects/better-poi/src/test/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "File.Encoding",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.github.betterpoi.validation" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+      <recent name="junit.framework.TestCase" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="io.github.r4tylmz.betterpoi" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.r4tylmz.betterpoi" />
+      <recent name="com.r4tylmz.betterpoi.utils" />
+      <recent name="com.r4tylmz.betterpoi.validation.cell" />
+      <recent name="com.r4tylmz.betterpoi.validation.row" />
+      <recent name="com.r4tylmz.betterpoi.validation.col" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.r4tylmz.betterpoi.validation.cell" />
+      <recent name="com.github.betterpoi" />
+      <recent name="com.github.betterpoi.constraint" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Maven.better-poi [clean,install]">
+    <configuration name="BPImporterTest.importExcelWithNullExcelType" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="better-poi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.r4tylmz.betterpoi.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.r4tylmz.betterpoi" />
+      <option name="MAIN_CLASS_NAME" value="io.github.r4tylmz.betterpoi.BPImporterTest" />
+      <option name="METHOD_NAME" value="importExcelWithNullExcelType" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BPImporterTest.importExcelWithValidPath" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="better-poi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.r4tylmz.betterpoi.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.r4tylmz.betterpoi" />
+      <option name="MAIN_CLASS_NAME" value="io.github.r4tylmz.betterpoi.BPImporterTest" />
+      <option name="METHOD_NAME" value="importExcelWithValidPath" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BPImporterTest.testImportExcelWithError" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="better-poi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.r4tylmz.betterpoi.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.r4tylmz.betterpoi" />
+      <option name="MAIN_CLASS_NAME" value="io.github.r4tylmz.betterpoi.BPImporterTest" />
+      <option name="METHOD_NAME" value="testImportExcelWithError" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="better-poi" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.github.r4tylmz.betterpoi.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="io.github.r4tylmz.betterpoi" />
+      <option name="MAIN_CLASS_NAME" value="io.github.r4tylmz.betterpoi.BPImporterTest" />
+      <option name="METHOD_NAME" value="testImportExcelWithNullWorkbookClassAndNullExcelType" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="java in better-poi" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="better-poi" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="better-poi [clean,install]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="install" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.BPImporterTest.importExcelWithNullExcelType" />
+      <item itemvalue="JUnit.BPImporterTest.importExcelWithValidPath" />
+      <item itemvalue="JUnit.BPImporterTest.testImportExcelWithError" />
+      <item itemvalue="JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType" />
+      <item itemvalue="JUnit.java in better-poi" />
+      <item itemvalue="Maven.better-poi [clean,install]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.java in better-poi" />
+        <item itemvalue="JUnit.BPImporterTest.testImportExcelWithError" />
+        <item itemvalue="JUnit.BPImporterTest.importExcelWithNullExcelType" />
+        <item itemvalue="JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType" />
+        <item itemvalue="JUnit.BPImporterTest.importExcelWithValidPath" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9de94625-7d95-462b-9ad0-ea7cb87c8c4f" name="Changes" comment="" />
+      <created>1727006129652</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727006129652</updated>
+      <workItem from="1727006130693" duration="21037000" />
+      <workItem from="1727476074843" duration="67677000" />
+      <workItem from="1728490995287" duration="401000" />
+      <workItem from="1728504403133" duration="9000" />
+      <workItem from="1728504419521" duration="17685000" />
+      <workItem from="1729284917380" duration="5271000" />
+      <workItem from="1729336997413" duration="170000" />
+      <workItem from="1729337172717" duration="9211000" />
+      <workItem from="1730830911406" duration="56000" />
+      <workItem from="1730831004699" duration="30105000" />
+      <workItem from="1731351548559" duration="1264000" />
+      <workItem from="1731353917971" duration="539000" />
+      <workItem from="1731354466301" duration="12820000" />
+      <workItem from="1731613760952" duration="2072000" />
+      <workItem from="1731615843863" duration="71000" />
+      <workItem from="1731615920321" duration="36000" />
+      <workItem from="1731615962472" duration="3661000" />
+      <workItem from="1731691148788" duration="1294000" />
+      <workItem from="1731700432690" duration="131000" />
+      <workItem from="1731700568383" duration="2108000" />
+      <workItem from="1731706561923" duration="161000" />
+      <workItem from="1731706728027" duration="187000" />
+      <workItem from="1731706922085" duration="8222000" />
+      <workItem from="1734733570005" duration="29000" />
+      <workItem from="1734733604834" duration="205000" />
+      <workItem from="1734734503241" duration="19024000" />
+      <workItem from="1742840945106" duration="51000" />
+      <workItem from="1742841004288" duration="5977000" />
+      <workItem from="1754746975207" duration="24000" />
+      <workItem from="1754747650724" duration="124000" />
+      <workItem from="1754747785746" duration="5731000" />
+      <workItem from="1754815845690" duration="10552000" />
+    </task>
+    <task id="LOCAL-00011" summary="fix(typo): Fix fieldName typo">
+      <option name="closed" value="true" />
+      <created>1727711211879</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1727711211879</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix(typo): Rename BPWorkbook and update getDataFields function">
+      <option name="closed" value="true" />
+      <created>1727808396046</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1727808396046</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: Add a marker interface for BPImporter">
+      <option name="closed" value="true" />
+      <created>1727808674740</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1727808674740</updated>
+    </task>
+    <task id="LOCAL-00014" summary="refactor: Reorganize folder structure for better module separation">
+      <option name="closed" value="true" />
+      <created>1727808860190</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1727808860190</updated>
+    </task>
+    <task id="LOCAL-00015" summary="docs: Update README">
+      <option name="closed" value="true" />
+      <created>1727809359458</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1727809359458</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat: Add excel export functionality">
+      <option name="closed" value="true" />
+      <created>1727813275096</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1727813275096</updated>
+    </task>
+    <task id="LOCAL-00017" summary="docs: Add excel export explanation">
+      <option name="closed" value="true" />
+      <created>1727813545845</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1727813545845</updated>
+    </task>
+    <task id="LOCAL-00018" summary="test: Add cell and col constraints tests">
+      <option name="closed" value="true" />
+      <created>1727900627577</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1727900627577</updated>
+    </task>
+    <task id="LOCAL-00019" summary="feat: Add DuplicateRowConstraint with unit tests">
+      <option name="closed" value="true" />
+      <created>1728318151843</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1728318151843</updated>
+    </task>
+    <task id="LOCAL-00020" summary="docs: Add to-do list">
+      <option name="closed" value="true" />
+      <created>1728319503666</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1728319503666</updated>
+    </task>
+    <task id="LOCAL-00021" summary="docs: Add java docs">
+      <option name="closed" value="true" />
+      <created>1728764758561</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1728764758561</updated>
+    </task>
+    <task id="LOCAL-00022" summary="test: Add ExcelUtils and UserDefinedValidator unit tests">
+      <option name="closed" value="true" />
+      <created>1728764860877</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1728764860877</updated>
+    </task>
+    <task id="LOCAL-00023" summary="chore: Update POI version from 3.15 to 5.0.0">
+      <option name="closed" value="true" />
+      <created>1729343494674</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1729343494674</updated>
+    </task>
+    <task id="LOCAL-00024" summary="refactor: add CellUtil">
+      <option name="closed" value="true" />
+      <created>1729343622133</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1729343622133</updated>
+    </task>
+    <task id="LOCAL-00025" summary="refactor: update FormatCell function to support new poi version">
+      <option name="closed" value="true" />
+      <created>1729343857522</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1729343857522</updated>
+    </task>
+    <task id="LOCAL-00026" summary="test: add test for BPImporter and add sample Excel files">
+      <option name="closed" value="true" />
+      <created>1729343926837</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1729343926837</updated>
+    </task>
+    <task id="LOCAL-00027" summary="fix: Fix compiler error">
+      <option name="closed" value="true" />
+      <created>1729344225064</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1729344225064</updated>
+    </task>
+    <task id="LOCAL-00028" summary="feat: add multiple cell validator to BPColumn">
+      <option name="closed" value="true" />
+      <created>1730838236263</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1730838236263</updated>
+    </task>
+    <task id="LOCAL-00029" summary="test: add tests for cell validation with multiple cell validators">
+      <option name="closed" value="true" />
+      <created>1730838298743</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1730838298743</updated>
+    </task>
+    <task id="LOCAL-00030" summary="docs: add multiple cell validators docs">
+      <option name="closed" value="true" />
+      <created>1730838454539</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1730838454539</updated>
+    </task>
+    <task id="LOCAL-00031" summary="feat: add maven publish yaml">
+      <option name="closed" value="true" />
+      <created>1730844459327</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1730844459327</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat: add importing base64 and getting cell value by row header map">
+      <option name="closed" value="true" />
+      <created>1731186081875</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1731186081875</updated>
+    </task>
+    <task id="LOCAL-00033" summary="test: add test for importing base64 string and importing excel with general data format">
+      <option name="closed" value="true" />
+      <created>1731186116608</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1731186116608</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fix: fix col header mismatch logic">
+      <option name="closed" value="true" />
+      <created>1731186144035</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1731186144035</updated>
+    </task>
+    <task id="LOCAL-00035" summary="feat: add maven central repo support">
+      <option name="closed" value="true" />
+      <created>1731348683352</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1731348683352</updated>
+    </task>
+    <task id="LOCAL-00036" summary="fix: fix deploy command in maven publish yaml">
+      <option name="closed" value="true" />
+      <created>1731349719101</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1731349719102</updated>
+    </task>
+    <task id="LOCAL-00037" summary="fix: fix maven-java-docs">
+      <option name="closed" value="true" />
+      <created>1731350317432</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1731350317432</updated>
+    </task>
+    <task id="LOCAL-00038" summary="docs: add installation info and maven badges">
+      <option name="closed" value="true" />
+      <created>1731351889177</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1731351889177</updated>
+    </task>
+    <task id="LOCAL-00039" summary="chore: separate release and build configurations in pom.xml">
+      <option name="closed" value="true" />
+      <created>1731361210502</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1731361210502</updated>
+    </task>
+    <task id="LOCAL-00040" summary="fix: change required validator message">
+      <option name="closed" value="true" />
+      <created>1731613789120</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1731613789120</updated>
+    </task>
+    <task id="LOCAL-00041" summary="feat: add LocalDateConverter and LocalDateTimeConverter">
+      <option name="closed" value="true" />
+      <created>1731613814407</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1731613814407</updated>
+    </task>
+    <task id="LOCAL-00042" summary="feat: add new converter supports to ConvertUtils">
+      <option name="closed" value="true" />
+      <created>1731613953426</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1731613953426</updated>
+    </task>
+    <task id="LOCAL-00043" summary="test: add new datatypes to example excel class">
+      <option name="closed" value="true" />
+      <created>1731614075471</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1731614075472</updated>
+    </task>
+    <task id="LOCAL-00044" summary="chore: add deploying with revision">
+      <option name="closed" value="true" />
+      <created>1731614536925</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1731614536925</updated>
+    </task>
+    <task id="LOCAL-00045" summary="chore: update publish.yaml for deployment configuration">
+      <option name="closed" value="true" />
+      <created>1731616010037</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1731616010037</updated>
+    </task>
+    <task id="LOCAL-00046" summary="chore: update publish.yaml for automatic versioning">
+      <option name="closed" value="true" />
+      <created>1731616989373</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1731616989373</updated>
+    </task>
+    <task id="LOCAL-00047" summary="docs: update version in README">
+      <option name="closed" value="true" />
+      <created>1731617739006</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1731617739006</updated>
+    </task>
+    <task id="LOCAL-00048" summary="chore: add updating version number in readme">
+      <option name="closed" value="true" />
+      <created>1731617817737</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1731617817737</updated>
+    </task>
+    <task id="LOCAL-00049" summary="refactor: Refactor error message formats in Row and Cell validators">
+      <option name="closed" value="true" />
+      <created>1731709426454</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1731709426454</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat: add RowUtil utility class for checking empty rows&#10;&#10;Introduced RowUtil class with a method to check if a row is empty. Updated BPImporter and BPValidator to use this method for better code readability and reuse.">
+      <option name="closed" value="true" />
+      <created>1731709466580</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1731709466580</updated>
+    </task>
+    <task id="LOCAL-00051" summary="fix: simplify duplicate row error messages">
+      <option name="closed" value="true" />
+      <created>1731709486539</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1731709486539</updated>
+    </task>
+    <task id="LOCAL-00052" summary="test: add comprehensive unit tests for BPExporter class&#10;&#10;Introduced a new test class, BPExporterTest, with multiple test cases to validate the export functionality under various conditions, including valid data, empty data, null values, outputting to streams, invalid paths, and error handling.">
+      <option name="closed" value="true" />
+      <created>1731712652288</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1731712652288</updated>
+    </task>
+    <task id="LOCAL-00053" summary="test: add unit tests for BPMetadataHandler">
+      <option name="closed" value="true" />
+      <created>1731712662314</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1731712662314</updated>
+    </task>
+    <task id="LOCAL-00054" summary="fix: remove redundant logging in BPMetadataHandler">
+      <option name="closed" value="true" />
+      <created>1731712671416</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1731712671416</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat: add initial project setup with IntelliJ configuration, message localization, and MessageSourceService&#10;&#10;- Added IntelliJ IDEA project files for configuration and code styles.&#10;- Introduced MessageSourceService class for handling internationalization (i18n).&#10;- Included English and Turkish localization files for validation and error messages.&#10;- Added `.gitignore` with Java, Maven, Gradle, IntelliJ, and other standard entries.&#10;- Configured Maven settings for accessing GitHub repositories.">
+      <option name="closed" value="true" />
+      <created>1734735585160</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1734735585163</updated>
+    </task>
+    <task id="LOCAL-00056" summary="refactor: exclude target folder">
+      <option name="closed" value="true" />
+      <created>1736361421279</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1736361421279</updated>
+    </task>
+    <task id="LOCAL-00057" summary="feat: enhance getCellValue method to support various field types and improve error handling">
+      <option name="closed" value="true" />
+      <created>1742847418098</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1742847418098</updated>
+    </task>
+    <task id="LOCAL-00058" summary="feat: change encoding">
+      <option name="closed" value="true" />
+      <created>1754817315090</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1754817315090</updated>
+    </task>
+    <task id="LOCAL-00059" summary="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests">
+      <option name="closed" value="true" />
+      <created>1754836454584</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1754836454584</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="GitHub.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="fix: change required validator message" />
+    <MESSAGE value="feat: add LocalDateConverter and LocalDateTimeConverter" />
+    <MESSAGE value="feat: add new converter supports to ConvertUtils" />
+    <MESSAGE value="test: add new datatypes to example excel class" />
+    <MESSAGE value="chore: add deploying with revision" />
+    <MESSAGE value="chore: update publish.yaml for deployment configuration" />
+    <MESSAGE value="chore: update publish.yaml for automatic versioning" />
+    <MESSAGE value="docs: update version in README" />
+    <MESSAGE value="chore: add updating version number in readme" />
+    <MESSAGE value="Simplify duplicate row error message&#10;&#10;This change modifies the error message for duplicate rows to be more concise. Instead of indicating the row number, the message now simply states &quot;Duplicate row found.&quot; This improves readability and focuses on the issue rather than its location." />
+    <MESSAGE value="Improve error message formatting and simplify duplicate row error&#10;&#10;Added a newline character to error messages in RowValidatorManager for better readability. Simplified the duplicate row error message in DuplicateRowConstraint. Also added a TODO comment in BPValidator for future implementation of an isRowCompletelyEmpty method." />
+    <MESSAGE value="Update error messages and add TODO for empty row check&#10;&#10;Adjusted the formatting of error messages in `RowValidatorManager` and simplified error descriptions in `DuplicateRowConstraint`. Additionally, a TODO comment was added in `BPValidator` for future implementation of `isRowCompletelyEmpty` method." />
+    <MESSAGE value="fix: Refactor error messages and add RowUtil utility class&#10;&#10;Updated error messages formatting for consistency and clarity. Introduced RowUtil utility class to check if rows are empty, and leveraged it in BPImporter and BPValidator classes. Streamlined duplicate row detection message formatting in DuplicateRowConstraint class and tests." />
+    <MESSAGE value="refactor: Refactor error message formats in Row and Cell validators" />
+    <MESSAGE value="feat: add RowUtil utility class for checking empty rows&#10;&#10;Introduced RowUtil class with a method to check if a row is empty. Updated BPImporter and BPValidator to use this method for better code readability and reuse." />
+    <MESSAGE value="fix: simplify duplicate row error messages" />
+    <MESSAGE value="test: add unit tests for BPExporter class&#10;" />
+    <MESSAGE value="test: add comprehensive unit tests for BPExporter class&#10;&#10;Introduced a new test class, BPExporterTest, with multiple test cases to validate the export functionality under various conditions, including valid data, empty data, null values, outputting to streams, invalid paths, and error handling." />
+    <MESSAGE value="test: add unit tests for BPMetadataHandler" />
+    <MESSAGE value="fix: remove redundant logging in BPMetadataHandler" />
+    <MESSAGE value="feat: add initial project setup with IntelliJ configuration, message localization, and MessageSourceService&#10;&#10;- Added IntelliJ IDEA project files for configuration and code styles.&#10;- Introduced MessageSourceService class for handling internationalization (i18n).&#10;- Included English and Turkish localization files for validation and error messages.&#10;- Added `.gitignore` with Java, Maven, Gradle, IntelliJ, and other standard entries.&#10;- Configured Maven settings for accessing GitHub repositories." />
+    <MESSAGE value="refactor: exclude target folder" />
+    <MESSAGE value="feat: enhance getCellValue method to support various field types and improve error handling" />
+    <MESSAGE value="feat: change encoding" />
+    <MESSAGE value="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/BPImporterTest.java</url>
+          <line>133</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="row.getCell(i)" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/better_poi$All_in_better_poi.ic" NAME="All in better-poi Coverage Results" MODIFIED="1728317933379" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+  </component>
+</project>
