@@ -24,7 +24,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9de94625-7d95-462b-9ad0-ea7cb87c8c4f" name="Changes" comment="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/DualPropertiesDemo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/test.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/test_tr.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/BPOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/BPOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/validation/CellValidatorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/validation/CellValidatorManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,77 +79,77 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Debug",
-    "JUnit.All in better-poi.executor": "Run",
-    "JUnit.BPExporterTest.executor": "Run",
-    "JUnit.BPImporterTest.executor": "Run",
-    "JUnit.BPImporterTest.getWorkbookClass.executor": "Run",
-    "JUnit.BPImporterTest.importExcelWithEmptyPath.executor": "Run",
-    "JUnit.BPImporterTest.importExcelWithEmptyPathThrowsIOException.executor": "Run",
-    "JUnit.BPImporterTest.importExcelWithInputStream.executor": "Debug",
-    "JUnit.BPImporterTest.importExcelWithNullExcelType.executor": "Debug",
-    "JUnit.BPImporterTest.importExcelWithNullInputStream.executor": "Run",
-    "JUnit.BPImporterTest.importExcelWithNullPath.executor": "Debug",
-    "JUnit.BPImporterTest.importExcelWithNullWorkbookClass.executor": "Run",
-    "JUnit.BPImporterTest.importExcelWithValidPath.executor": "Debug",
-    "JUnit.BPImporterTest.setWorkbookClass.executor": "Run",
-    "JUnit.BPImporterTest.testImport.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithError.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithGeneralFormat (1).executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithGeneralFormat.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithNoErrors.executor": "Run",
-    "JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNotValidExcelType.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithValidBase64.executor": "Debug",
-    "JUnit.BPImporterTest.testImportExcelWithValidFile.executor": "Run",
-    "JUnit.BPImporterTest.testImportWithInvalidPath.executor": "Run",
-    "JUnit.BPMetadataHandlerTest.executor": "Run",
-    "JUnit.BPValidatorTest.executor": "Run",
-    "JUnit.ColHeaderMismatchConstraintTest.executor": "Run",
-    "JUnit.DefaultConstraintTest.executor": "Debug",
-    "JUnit.DefaultConstraintTest.testValidate_cellEmpty.executor": "Debug",
-    "JUnit.DuplicateRowConstraintTest.executor": "Debug",
-    "JUnit.ExcelUtilsTest.executor": "Run",
-    "JUnit.MultipleCellValidatorTest.executor": "Debug",
-    "JUnit.MultipleCellValidatorTest.testValidate_emptyValue.executor": "Debug",
-    "JUnit.MultipleCellValidatorTest.testValidate_pattern_NotMatch_9Chars.executor": "Run",
-    "JUnit.MultipleCellValidatorTest.testValidate_pattern_notMatch_10Chars_required.executor": "Debug",
-    "JUnit.PatternValidatorTest.executor": "Run",
-    "JUnit.PatternValidatorTest.validate_datePatternForDateField.executor": "Run",
-    "JUnit.PatternValidatorTest.validate_datePatternForLocalDateField.executor": "Run",
-    "JUnit.PatternValidatorTest.validate_datePatternForNonDateField.executor": "Debug",
-    "JUnit.RequiredValidatorTest.executor": "Debug",
-    "JUnit.UserDefinedMaxLenValidatorTest.executor": "Run",
-    "JUnit.UserDefinedValidatorTest.executor": "Run",
-    "JUnit.java in better-poi.executor": "Debug",
-    "Maven.better-poi [clean,install] (11).executor": "Run",
-    "Maven.better-poi [clean,install].executor": "Run",
-    "Maven.better-poi [compile].executor": "Run",
-    "Maven.better-poi [validate].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "ToolWindow.GitHub Copilot Chat.ShowToolbar": "false",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit3",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3": "",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/ylmz/IdeaProjects/better-poi/src/test/resources",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "File.Encoding",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.All in better-poi.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPExporterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.getWorkbookClass.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithEmptyPath.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithEmptyPathThrowsIOException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithInputStream.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithNullExcelType.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithNullInputStream.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithNullPath.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithNullWorkbookClass.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.importExcelWithValidPath.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.setWorkbookClass.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.testImport.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithError.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithGeneralFormat (1).executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithGeneralFormat.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithNoErrors.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNotValidExcelType.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithValidBase64.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.BPImporterTest.testImportExcelWithValidFile.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPImporterTest.testImportWithInvalidPath.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPMetadataHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BPValidatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ColHeaderMismatchConstraintTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DefaultConstraintTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.DefaultConstraintTest.testValidate_cellEmpty.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.DuplicateRowConstraintTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ExcelUtilsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MultipleCellValidatorTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.MultipleCellValidatorTest.testValidate_emptyValue.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.MultipleCellValidatorTest.testValidate_pattern_NotMatch_9Chars.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MultipleCellValidatorTest.testValidate_pattern_notMatch_10Chars_required.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.PatternValidatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PatternValidatorTest.validate_datePatternForDateField.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PatternValidatorTest.validate_datePatternForLocalDateField.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PatternValidatorTest.validate_datePatternForNonDateField.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.RequiredValidatorTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.UserDefinedMaxLenValidatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserDefinedValidatorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.java in better-poi.executor&quot;: &quot;Debug&quot;,
+    &quot;Maven.better-poi [clean,install] (11).executor&quot;: &quot;Run&quot;,
+    &quot;Maven.better-poi [clean,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.better-poi [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.better-poi [validate].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;ToolWindow.GitHub Copilot Chat.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit3&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ylmz/IdeaProjects/better-poi/src/test/resources&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.github.betterpoi.validation" />
@@ -804,7 +812,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/BPImporterTest.java</url>
-          <line>133</line>
+          <line>157</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
