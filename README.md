@@ -1,178 +1,311 @@
-# Better Poi
+# Better POI
 
-> Still in development and not ready for production use.
+A Java library for Excel file operations using Apache POI with enhanced validation, internationalization, and error handling capabilities.
 
 ![Maven Central Version](https://img.shields.io/maven-central/v/io.github.r4tylmz/better-poi)
 ![GitHub](https://img.shields.io/github/license/r4tylmz/better-poi)
 ![GitHub issues](https://img.shields.io/github/issues/r4tylmz/better-poi)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/r4tylmz/better-poi)
 
+## Features
+
+- Excel import/export support for XLS and XLSX formats
+- Advanced validation system with custom constraints
+- Internationalization support with user customization
+- Flexible error handling with optional exception throwing
+- Custom validation rules and constraints
+- UTF-8 encoding support
+- Dual properties system with fallback mechanism
+
 ## Installation
+
+### Maven
 
 ```xml
 <dependency>
     <groupId>io.github.r4tylmz</groupId>
     <artifactId>better-poi</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 </dependency>
 ```
 
-## Introduction
+## Quick Start
 
-Better Poi is an extension for Apache POI, a powerful library used for reading and writing Microsoft Office documents.
-This extension is designed to simplify the usage of Apache POI for handling Excel files.
-
-## Features
-
-- Simplifies reading Excel files with just one line of code.
-- Supports reading both XLS and XLSX files.
-- Supports custom validation for Excel files.
-- Allows custom constraints for Excel cells, columns and rows.
-- Provides pattern validation for Excel cells.
-- **NEW**: Internationalization (i18n) support with UTF-8 encoding.
-- **NEW**: Configurable options through BPOptions class.
-- **NEW**: Localized validation error messages in multiple languages.
-- **NEW**: Comprehensive exception handling with detailed error information.
-
-## TO DO List
-
-- [x] Add exception handling
-- [ ] Add multi thread support for large files
-- [ ] Add support for CSV files
-- [ ] Add column data type constraint
-- [ ] Add error cell highlighting
-- [ ] Add support for inserting Excel files into an existing Excel file
-
-## Usage
-
-Define a class to represent the Excel file.
+### Basic Usage
 
 ```java
-public class TestExcel {
-    private String col1;
-    private String col2;
-    private Double col3;
-    private String col4;
-    private String col5;
-    private String col6;
+// Configure options
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("en")
+        .build();
 
-    // Getters and setters
-    // ...
+// Import Excel file
+BPImporter<TestWorkBook> importer = new BPImporter<>(TestWorkBook.class, options);
+TestWorkBook workbook = importer.importExcel("test.xlsx");
+
+// Check validation status
+if (importer.hasValidationErrors()) {
+    List<String> errors = importer.getErrorMessageList();
+    // Handle validation errors
 }
+
+// Export Excel file
+BPExporter exporter = new BPExporter(workbook);
+exporter.exportExcel("output.xlsx");
 ```
 
-Define a Workbook class, annotate it with `@BPWorkbook`, and implement the `BPExcelWorkbook` interface.
+## Core Components
+
+### BPImporter
+
+Handles Excel file import operations with validation support.
+
+```java
+BPImporter<TestWorkBook> importer = new BPImporter<>(TestWorkBook.class, options);
+
+// Import methods
+TestWorkBook workbook = importer.importExcel("file.xlsx");
+TestWorkBook workbook = importer.importExcel(new File("file.xlsx"));
+TestWorkBook workbook = importer.importExcel(inputStream);
+TestWorkBook workbook = importer.importExcelBase64(base64String);
+
+// Validation methods
+boolean hasErrors = importer.hasValidationErrors();
+boolean isValid = importer.isValidationSuccessful();
+List<String> errors = importer.getErrorMessageList();
+
+// Optional exception throwing
+importer.throwValidationExceptionIfErrors();
+```
+
+### BPExporter
+
+Manages Excel file export operations.
+
+```java
+BPExporter exporter = new BPExporter(workbook);
+
+// Export methods
+exporter.exportExcel("output.xlsx");
+exporter.exportExcel(new File("output.xlsx"));
+exporter.exportExcel(outputStream);
+```
+
+### BPOptions
+
+Configuration options for library operations.
+
+```java
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        .withBundleName("myapp")  // Optional: custom properties
+        .build();
+```
+
+## Annotations
+
+### @BPWorkbook
+
+Marks a class as an Excel workbook. The class must implement the `BPExcelWorkbook` interface.
+
 ```java
 @BPWorkbook
 public class TestWorkBook implements BPExcelWorkbook {
-
-    @BPSheet(sheetName = "Sheet1",
-            type = TestExcel.class, columns = {
-            @BPColumn(fieldName = "col1"),
-            @BPColumn(fieldName = "col2", required = true),
-            @BPColumn(fieldName = "col3"),
-            @BPColumn(fieldName = "col4"),
-            @BPColumn(fieldName = "col5"),
-            @BPColumn(fieldName = "col6"),
-    })
-    List<TestExcel> testExcelList;
-    // Getters and setters
-    // ...
+    // Workbook implementation
 }
 ```
 
-You can use predefined constraints for Excel cells, rows, and columns, or create your own by extending the relevant
-class (`RowConstraint` for rows, `ColConstraint` for columns, and `CellValidator` for cells).
+### @BPSheet
+
+Defines a sheet in the workbook with validation and column configuration.
 
 ```java
-@BPWorkbook
-public class TestWorkBook implements BPExcelWorkbook {
-
-    @BPSheet(sheetName = "Sheet1",
-            colValidators = {DefaultConstraint.class},
-            rowValidators = {DefaultConstraint.class},
-            type = TestExcel.class, columns = {
-            @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidators = {DefaultConstraint.class}),
-            @BPColumn(fieldName = "col2", headerTitle = "Column 2", required = true),
-            @BPColumn(fieldName = "col3", headerTitle = "Column 3"),
-            @BPColumn(fieldName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
-            @BPColumn(fieldName = "col5", headerTitle = "Column 5"),
-            @BPColumn(fieldName = "col6", headerTitle = "Column 6"),
-    })
-    List<TestExcel> testExcelList;
-    // Getters and setters
-    // ...
-}
+@BPSheet(
+    sheetName = "Sheet1",
+    type = TestExcel.class,
+    colValidators = {DefaultConstraint.class},
+    rowValidators = {DefaultConstraint.class},
+    columns = {
+        @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidators = {DefaultConstraint.class}),
+        @BPColumn(fieldName = "col2", headerTitle = "Column 2", required = true),
+        @BPColumn(fieldName = "col3", headerTitle = "Column 3"),
+        @BPColumn(fieldName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
+        @BPColumn(fieldName = "col5", headerTitle = "Column 5"),
+        @BPColumn(fieldName = "col6", headerTitle = "Column 6")
+    }
+)
+private List<TestExcel> testExcelList;
 ```
 
-### Reading Excel Files
+### @BPColumn
 
-**NEW**: Use BPOptions for configuration and localization support.
+Defines column properties and validation rules.
 
 ```java
-public class Test {
-    public static void main(String[] args) {
-        // Create options with default settings
-        BPOptions options = BPOptions.createDefault();
-        
-        // Or customize options
-        BPOptions customOptions = BPOptions.builder()
-                .withExcelType(ExcelType.XLSX)
-                .withLocale("tr") // Turkish locale
-                .withBundleName("messages")
-                .build();
-        
-        final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, customOptions);
-        final InputStream inputStream = Files.newInputStream(new File("/your_source/file.xlsx").toPath());
-        final TestWorkBook workbook = bpImporter.importExcel(inputStream);
+@BPColumn(
+    fieldName = "col1",
+    headerTitle = "Column 1",
+    required = true,
+    pattern = "^[a-zA-Z0-9]*$",
+    cellValidators = {DefaultConstraint.class}
+)
+private String col1;
+```
 
-        // Alternatively, you can use a File or String Path to import the Excel file:
-        // final TestWorkBook workbook = bpImporter.importExcel(new File("/your_source/file.xlsx"));
-        // final TestWorkBook workbook = bpImporter.importExcel("/your_source/file.xlsx");
+## Validation System
 
-        // Excel is now ready to be used as a Java object.
-        List<TestExcel> testExcelList = workbook.getTestExcelList();
+### Built-in Validators
+
+- **RequiredValidator**: Ensures required fields are not null or empty
+- **PatternValidator**: Validates cell values against regex patterns
+- **UserDefinedMaxLenValidator**: Customizable maximum length validation
+
+### Custom Validators
+
+Implement custom validation by extending `CellValidator`:
+
+```java
+public class CustomEmailValidator extends CellValidator {
+    @Override
+    public String validate(CellHolder cellHolder) {
+        String value = cellHolder.getCellValue();
+        if (value != null && !value.contains("@")) {
+            return "Invalid email format";
+        }
+        return null; // No error
     }
 }
 ```
 
-### Exception Handling
+### Constraints
 
-**NEW**: The library now provides comprehensive exception handling with detailed error information and proper error codes.
+- **Row Constraints**: Validate entire rows (e.g., duplicate detection)
+- **Column Constraints**: Validate column headers and structure
+- **Cell Constraints**: Validate individual cell values
 
-#### Exception Types
+## Internationalization
 
-- **BPException**: Base exception class for all Better POI exceptions
-- **BPImportException**: Thrown during import operations with sheet, row, and column information
-- **BPExportException**: Thrown during export operations with sheet and field information
-- **BPValidationException**: Thrown when validation fails with detailed error information
-- **BPConfigurationException**: Thrown for configuration errors
+### Dual Properties Support
 
-#### Example: Handling Import Exceptions
+The library supports both built-in library properties and user-defined properties with intelligent fallback.
+
+#### Properties Resolution Order
+
+1. User localized properties (e.g., `project_tr.properties`)
+2. User default properties (e.g., `project.properties`)
+3. Library localized properties (e.g., `messages_tr.properties`)
+4. Library default properties (e.g., `messages.properties`)
+
+#### Usage Examples
+
+**Library Properties Only (Default)**
+```java
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        .build();
+```
+
+**Custom Properties with Fallback**
+```java
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        .withBundleName("project")
+        .build();
+```
+
+#### Properties File Structure
+
+**Library Properties (Built-in)**
+```
+src/main/resources/
+├── messages.properties          # English (default)
+└── messages_tr.properties      # Turkish
+```
+
+**Custom Properties**
+```
+src/main/resources/
+├── project.properties          # Default messages
+├── project_tr.properties      # Turkish messages
+├── project_fr.properties      # French messages
+└── project_de.properties      # German messages
+```
+
+## Error Handling
+
+### Non-Exception Validation (Recommended)
+
+By default, the importer completes the import process even when validation fails, collecting all errors for review.
+
+#### Benefits
+
+- Business logic continues regardless of validation errors
+- All validation errors are collected and accessible
+- Flexible error handling based on business requirements
+- Better user experience with comprehensive error reporting
+
+#### Available Methods
+
+```java
+// Check validation status
+boolean hasErrors = bpImporter.hasValidationErrors();
+boolean isValid = bpImporter.isValidationSuccessful();
+
+// Access error messages
+List<String> errors = bpImporter.getErrorMessageList();
+
+// Optional exception throwing
+bpImporter.throwValidationExceptionIfErrors();
+```
+
+#### Example Usage
+
+```java
+BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
+TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+
+if (bpImporter.isValidationSuccessful()) {
+    System.out.println("Import successful - no validation errors");
+    // Process the workbook normally
+} else {
+    System.err.println("Import completed with validation errors:");
+    
+    List<String> errors = bpImporter.getErrorMessageList();
+    for (String error : errors) {
+        System.err.println("  - " + error);
+    }
+    
+    // Handle based on business logic
+    if (errors.size() <= 5) {
+        System.out.println("Minor validation issues - proceeding with import");
+    } else {
+        System.err.println("Too many validation errors - import rejected");
+    }
+}
+```
+
+### Exception-Based Error Handling (Optional)
+
+Traditional exception handling is still supported:
 
 ```java
 try {
-    final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
-    final TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+    BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
+    TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
     
-    // Check validation status after import
     if (bpImporter.hasValidationErrors()) {
-        System.err.println("Validation errors found:");
         List<String> errors = bpImporter.getErrorMessageList();
         for (String error : errors) {
             System.err.println("  - " + error);
         }
         
-        // Option 1: Handle errors gracefully (recommended)
-        System.err.println("Import completed with validation errors. Please review the data.");
-        
-        // Option 2: Throw exception if you prefer exception-based handling
-        // bpImporter.throwValidationExceptionIfErrors();
-    } else {
-        System.out.println("Import completed successfully with no validation errors.");
+        // Handle errors gracefully or throw exception
+        bpImporter.throwValidationExceptionIfErrors();
     }
-    
-    // Process workbook...
 } catch (BPImportException e) {
     System.err.println("Import failed: " + e.getMessage());
     System.err.println("Error Code: " + e.getErrorCode());
@@ -190,138 +323,148 @@ try {
     for (BPValidationException.ValidationError error : e.getValidationErrors()) {
         System.err.println("  - " + error.toString());
     }
-} catch (BPConfigurationException e) {
-    System.err.println("Configuration error: " + e.getMessage());
-    System.err.println("Key: " + e.getConfigurationKey());
-    System.err.println("Value: " + e.getConfigurationValue());
 }
 ```
 
-#### Example: Non-Exception Validation Handling (Recommended)
+## Exception Types
+
+- **BPException**: Base exception class for all Better POI exceptions
+- **BPImportException**: Thrown during import operations with detailed error information
+- **BPExportException**: Thrown during export operations with field and sheet information
+- **BPValidationException**: Thrown when validation fails with comprehensive error details
+- **BPConfigurationException**: Thrown for configuration errors with key-value information
+
+## Complete Example
+
+### TestExcel Model
 
 ```java
-// Import without automatic exception throwing
-final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
-final TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+public class TestExcel {
+    private String col1;
+    private String col2;
+    private Double col3;
+    private String col4;
+    private String col5;
+    private String col6;
+    
+    // Getters and setters
+}
+```
+
+### TestWorkBook Implementation
+
+```java
+@BPWorkbook
+public class TestWorkBook implements BPExcelWorkbook {
+
+    @BPSheet(sheetName = "Sheet1",
+            colValidators = {DefaultConstraint.class},
+            rowValidators = {DefaultConstraint.class},
+            type = TestExcel.class, columns = {
+            @BPColumn(fieldName = "col1", headerTitle = "Column 1", cellValidators = {DefaultConstraint.class}),
+            @BPColumn(fieldName = "col2", headerTitle = "Column 2", required = true),
+            @BPColumn(fieldName = "col3", headerTitle = "Column 3"),
+            @BPColumn(fieldName = "col4", headerTitle = "Column 4", pattern = "^[a-zA-Z0-9]*$"),
+            @BPColumn(fieldName = "col5", headerTitle = "Column 5"),
+            @BPColumn(fieldName = "col6", headerTitle = "Column 6"),
+    })
+    private List<TestExcel> testExcelList;
+    
+    // Getters and setters
+}
+```
+
+### Import with Validation
+
+```java
+// Configure options with custom properties
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        .withBundleName("myapp")
+        .build();
+
+// Create importer
+BPImporter<TestWorkBook> importer = new BPImporter<>(TestWorkBook.class, options);
+
+// Import Excel file
+TestWorkBook workbook = importer.importExcel("test.xlsx");
 
 // Check validation status
-if (bpImporter.isValidationSuccessful()) {
-    System.out.println("Import successful - no validation errors");
-    // Process the workbook normally
-} else {
-    System.err.println("Import completed with validation errors:");
-    
-    // Get detailed error messages
-    List<String> errors = bpImporter.getErrorMessageList();
+if (importer.hasValidationErrors()) {
+    System.err.println("Validation errors found:");
+    List<String> errors = importer.getErrorMessageList();
     for (String error : errors) {
         System.err.println("  - " + error);
     }
     
-    // Decide how to handle based on your business logic
+    // Handle based on business logic
     if (errors.size() <= 5) {
         System.out.println("Minor validation issues - proceeding with import");
-        // Continue processing with warnings
     } else {
         System.err.println("Too many validation errors - import rejected");
-        // Reject the import or take corrective action
     }
+} else {
+    System.out.println("Import successful - no validation errors");
 }
+
+// Process the workbook
+List<TestExcel> testExcelList = workbook.getTestExcelList();
+System.out.println("Imported " + testExcelList.size() + " records");
 ```
 
-#### Example: Handling Export Exceptions
+### Export
 
 ```java
-try {
-    final BPExporter bpExporter = new BPExporter(workbook);
-    bpExporter.exportExcel("/path/to/output.xlsx");
-} catch (BPExportException e) {
-    System.err.println("Export failed: " + e.getMessage());
-    System.err.println("Error Code: " + e.getErrorCode());
-    if (e.getSheetName() != null) {
-        System.err.println("Sheet: " + e.getSheetName());
-    }
-    if (e.getFieldName() != null) {
-        System.err.println("Field: " + e.getFieldName());
-    }
-} catch (BPConfigurationException e) {
-    System.err.println("Configuration error: " + e.getMessage());
-}
+// Export to Excel file
+BPExporter exporter = new BPExporter(workbook);
+exporter.exportExcel("output_test.xlsx");
 ```
 
-### Localization Support
+## Migration Guide
 
-**NEW**: The library now supports internationalization with UTF-8 encoding. Error messages are automatically localized based on the locale specified in BPOptions.
+### From Library Properties Only
 
+**Before**
 ```java
-// English locale (default)
-BPOptions englishOptions = BPOptions.builder()
-        .withExcelType(ExcelType.XLSX)
-        .withLocale("en")
-        .build();
-
-// Turkish locale
-BPOptions turkishOptions = BPOptions.builder()
+BPOptions options = BPOptions.builder()
         .withExcelType(ExcelType.XLSX)
         .withLocale("tr")
+        .withBundleName("messages")
         .build();
+```
 
-// Custom bundle name
-BPOptions customBundleOptions = BPOptions.builder()
+**After**
+```java
+BPOptions options = BPOptions.builder()
         .withExcelType(ExcelType.XLSX)
-        .withLocale("en")
-        .withBundleName("custom-messages")
+        .withLocale("tr")
+        .withBundleName("myapp")     // Uses your properties first
         .build();
 ```
 
-### Export Excel Files
-
-Export Excel file from a list of objects.
-
+**Or continue using library properties**
 ```java
-public class Test {
-    public static void main(String[] args) {
-        final TestWorkBook workbook = new TestWorkBook();
-        // Assume that you have a list of TestExcel objects
-        workbook.setTestExcelList(new ArrayList<>());
-        final BPExporter bpExporter = new BPExporter(workbook);
-        bpExporter.exportExcel(new File("/your_destination/file.xlsx"));
-    }
-}
+BPOptions options = BPOptions.builder()
+        .withExcelType(ExcelType.XLSX)
+        .withLocale("tr")
+        // No withBundleName() - uses library properties
+        .build();
 ```
 
-### Validation and Error Handling
+## TODO List
 
-**IMPORTANT**: The library now provides flexible validation handling that doesn't break your business logic.
+- [x] Add exception handling
+- [ ] Add multi thread support for large files
+- [ ] Add support for CSV files
+- [ ] Add column data type constraint
+- [ ] Add error cell highlighting
+- [ ] Add support for inserting Excel files into an existing Excel file
 
-#### New Validation Approach (Recommended)
+## Contributing
 
-By default, the importer **does not throw exceptions** for validation errors. Instead, it:
+Contributions are welcome. Please submit a Pull Request.
 
-1. **Completes the import** even when validation fails
-2. **Collects all validation errors** for your review
-3. **Allows you to decide** how to handle errors based on your business requirements
-4. **Provides methods** to check validation status and access error messages
+## License
 
-#### Benefits of Non-Exception Handling
-
-- ✅ **Business logic continues** - Import completes regardless of validation errors
-- ✅ **User gets validation messages** - All errors are collected and accessible
-- ✅ **Flexible error handling** - You choose when and how to handle errors
-- ✅ **Better user experience** - Users see all issues at once, not just the first error
-- ✅ **Batch processing** - Can process multiple files and collect all errors
-
-#### Available Validation Methods
-
-```java
-// Check if there were validation errors
-boolean hasErrors = bpImporter.hasValidationErrors();
-
-// Check if validation was successful
-boolean isValid = bpImporter.isValidationSuccessful();
-
-// Get list of error messages
-List<String> errors = bpImporter.getErrorMessageList();
-
-// Explicitly throw exception if you prefer that approach
-bpImporter.throwValidationExceptionIfErrors();
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

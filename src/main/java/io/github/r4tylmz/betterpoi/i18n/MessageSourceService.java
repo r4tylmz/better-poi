@@ -9,6 +9,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -18,47 +20,80 @@ import java.util.ResourceBundle;
  * This class is compatible with Java 1.8 and uses standard Java libraries.
  */
 public class MessageSourceService {
-    private static final String BUNDLE_NAME = "messages";
-    private final ResourceBundle bundle;
+    private static final String LIBRARY_BUNDLE_NAME = "messages";
+    private final List<ResourceBundle> bundles = new ArrayList<>();
+    private final Locale locale;
 
     /**
      * Creates a new MessageSourceService for the specified locale.
+     * Uses library's built-in properties file.
      *
      * @param locale the locale to use for messages
      */
     public MessageSourceService(Locale locale) {
-        this.bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale, new Utf8Control());
+        this(locale, null);
     }
 
     /**
      * Creates a new MessageSourceService for the specified locale and bundle name.
+     * If bundleName is provided, it will be tried first, then fallback to library properties.
      *
      * @param locale     the locale to use for messages
-     * @param bundleName the name of the resource bundle
+     * @param bundleName the name of the user-defined resource bundle (can be null)
      */
     public MessageSourceService(Locale locale, String bundleName) {
-        this.bundle = ResourceBundle.getBundle(bundleName, locale, new Utf8Control());
+        this.locale = locale;
+        initializeBundles(bundleName);
     }
 
     /**
-     * Creates a new MessageSourceService using the provided BPImporterOptions.
+     * Creates a new MessageSourceService using the provided BPOptions.
      * If the bundle name or locale is not specified in the options, defaults are used.
+     * Supports fallback from user properties to library properties.
      *
-     * @param options the BPImporterOptions containing bundle name and locale
+     * @param options the BPOptions containing bundle name and locale
      */
     public MessageSourceService(BPOptions options) {
-        this.bundle = ResourceBundle.getBundle(
-                options.getBundleName() != null ? options.getBundleName() : BUNDLE_NAME,
-                options.getLocale() != null ? options.getLocale() : Locale.getDefault(),
-                new Utf8Control()
-        );
+        this.locale = options.getLocale() != null ? options.getLocale() : Locale.getDefault();
+        initializeBundles(options.getBundleName());
+    }
+
+    /**
+     * Initializes the resource bundles with fallback support.
+     * First tries user-defined bundle, then falls back to library bundle.
+     *
+     * @param userBundleName the user-defined bundle name (can be null)
+     */
+    private void initializeBundles(String userBundleName) {
+        if (userBundleName != null && !userBundleName.trim().isEmpty()) {
+            try {
+                ResourceBundle userBundle = ResourceBundle.getBundle(userBundleName, locale, new Utf8Control());
+                if (userBundle != null) {
+                    bundles.add(userBundle);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        try {
+            ResourceBundle libraryBundle = ResourceBundle.getBundle(LIBRARY_BUNDLE_NAME, locale, new Utf8Control());
+            if (libraryBundle != null) {
+                bundles.add(libraryBundle);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load library properties file: " + LIBRARY_BUNDLE_NAME, e);
+        }
+
+        if (bundles.isEmpty()) {
+            throw new RuntimeException("No resource bundles could be loaded");
+        }
     }
 
     /**
      * Creates a MessageSourceService for the specified locale and bundle name.
      *
      * @param locale     the locale code (e.g., "en", "tr")
-     * @param bundleName the name of the resource bundle
+     * @param bundleName the name of the user-defined resource bundle
      * @return a new MessageSourceService instance
      */
     public static MessageSourceService forLocale(String locale, String bundleName) {
@@ -68,6 +103,7 @@ public class MessageSourceService {
 
     /**
      * Creates a MessageSourceService using the system default locale.
+     * Uses library's built-in properties file.
      *
      * @return a new MessageSourceService instance
      */
@@ -77,12 +113,31 @@ public class MessageSourceService {
 
     /**
      * Creates a MessageSourceService for the specified language.
+     * Uses library's built-in properties file.
      *
      * @param language the language code (e.g., "en" for English, "tr" for Turkish)
      * @return a new MessageSourceService instance
      */
     public static MessageSourceService forLocale(String language) {
         return new MessageSourceService(new Locale(language));
+    }
+
+    /**
+     * Gets the locale being used by this service.
+     *
+     * @return the locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Gets the number of resource bundles loaded.
+     *
+     * @return the number of bundles
+     */
+    public int getBundleCount() {
+        return bundles.size();
     }
 
     /**
@@ -121,13 +176,48 @@ public class MessageSourceService {
 
     /**
      * Gets a localized message with the given key and formats it with the provided arguments.
+     * Searches through bundles in order: user-defined first, then library properties.
      *
      * @param key  the message key in the resource bundle
      * @param args the arguments to format the message with
      * @return the formatted localized message
+     * @throws RuntimeException if the key is not found in any bundle
      */
     public String getMessage(String key, Object... args) {
-        String pattern = bundle.getString(key);
+        String pattern = getMessagePattern(key);
         return MessageFormat.format(pattern, args);
+    }
+
+    /**
+     * Gets a message pattern from the resource bundles.
+     * Searches through bundles in order until the key is found.
+     *
+     * @param key the message key
+     * @return the message pattern
+     * @throws RuntimeException if the key is not found in any bundle
+     */
+    private String getMessagePattern(String key) {
+        for (ResourceBundle bundle : bundles) {
+            if (bundle.containsKey(key)) {
+                return bundle.getString(key);
+            }
+        }
+        
+        throw new RuntimeException("Message key '" + key + "' not found in any resource bundle for locale: " + locale);
+    }
+
+    /**
+     * Checks if a message key exists in any of the loaded bundles.
+     *
+     * @param key the message key to check
+     * @return true if the key exists, false otherwise
+     */
+    public boolean hasMessage(String key) {
+        for (ResourceBundle bundle : bundles) {
+            if (bundle.containsKey(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
