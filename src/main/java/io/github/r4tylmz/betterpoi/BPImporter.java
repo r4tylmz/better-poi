@@ -122,6 +122,57 @@ public class BPImporter<T extends BPExcelWorkbook> {
     }
 
     /**
+     * Checks if the last import operation had validation errors.
+     *
+     * @return true if there were validation errors, false otherwise
+     */
+    public boolean hasValidationErrors() {
+        return bpValidator != null && !bpValidator.getErrorMessages().isEmpty();
+    }
+
+    /**
+     * Gets the validation status of the last import operation.
+     *
+     * @return true if validation passed, false if there were validation errors
+     */
+    public boolean isValidationSuccessful() {
+        return bpValidator == null || bpValidator.getErrorMessages().isEmpty();
+    }
+
+    /**
+     * Throws a BPValidationException if there are validation errors.
+     * This method allows users to explicitly use exception-based error handling
+     * when they prefer that approach.
+     *
+     * @throws BPValidationException if there are validation errors
+     */
+    public void throwValidationExceptionIfErrors() {
+        if (hasValidationErrors()) {
+            throw new BPValidationException("Workbook validation failed", 
+                createValidationErrorList());
+        }
+    }
+
+    /**
+     * Creates a list of ValidationError objects from the current error messages.
+     * This is used internally by throwValidationExceptionIfErrors().
+     *
+     * @return list of ValidationError objects
+     */
+    private List<BPValidationException.ValidationError> createValidationErrorList() {
+        List<BPValidationException.ValidationError> errors = new ArrayList<>();
+        if (bpValidator != null) {
+            List<String> errorMessages = bpValidator.getErrorMessages();
+            for (String errorMessage : errorMessages) {
+                errors.add(new BPValidationException.ValidationError(
+                    null, null, null, null, errorMessage, "VALIDATION_ERROR"
+                ));
+            }
+        }
+        return errors;
+    }
+
+    /**
      * Retrieves the header map from the given first row.
      *
      * @param row the row to retrieve the header map from
@@ -244,7 +295,8 @@ public class BPImporter<T extends BPExcelWorkbook> {
                         boolean isValid = bpValidator.validate(workbook, this.messageSourceService);
                         if (!isValid) {
                             logger.error("Errors found in the workbook: \n{}", getFormattedErrorMessage());
-                            throw new BPValidationException("Workbook validation failed");
+                            // Don't throw exception - let users check validation status and handle errors
+                            // Users can call getErrorMessageList() to get validation errors
                         }
                     }
                     final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
@@ -258,7 +310,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
                 }
             }
             return bpWorkBook;
-        } catch (BPValidationException | BPImportException e) {
+        } catch (BPImportException e) {
             throw e;
         } catch (InstantiationException e) {
             throw new BPConfigurationException("Failed to instantiate workbook class: " + workbookClass.getName(), e);

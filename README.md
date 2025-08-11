@@ -154,6 +154,24 @@ public class Test {
 try {
     final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
     final TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+    
+    // Check validation status after import
+    if (bpImporter.hasValidationErrors()) {
+        System.err.println("Validation errors found:");
+        List<String> errors = bpImporter.getErrorMessageList();
+        for (String error : errors) {
+            System.err.println("  - " + error);
+        }
+        
+        // Option 1: Handle errors gracefully (recommended)
+        System.err.println("Import completed with validation errors. Please review the data.");
+        
+        // Option 2: Throw exception if you prefer exception-based handling
+        // bpImporter.throwValidationExceptionIfErrors();
+    } else {
+        System.out.println("Import completed successfully with no validation errors.");
+    }
+    
     // Process workbook...
 } catch (BPImportException e) {
     System.err.println("Import failed: " + e.getMessage());
@@ -176,6 +194,37 @@ try {
     System.err.println("Configuration error: " + e.getMessage());
     System.err.println("Key: " + e.getConfigurationKey());
     System.err.println("Value: " + e.getConfigurationValue());
+}
+```
+
+#### Example: Non-Exception Validation Handling (Recommended)
+
+```java
+// Import without automatic exception throwing
+final BPImporter<TestWorkBook> bpImporter = new BPImporter<>(TestWorkBook.class, options);
+final TestWorkBook workbook = bpImporter.importExcel("/path/to/file.xlsx");
+
+// Check validation status
+if (bpImporter.isValidationSuccessful()) {
+    System.out.println("Import successful - no validation errors");
+    // Process the workbook normally
+} else {
+    System.err.println("Import completed with validation errors:");
+    
+    // Get detailed error messages
+    List<String> errors = bpImporter.getErrorMessageList();
+    for (String error : errors) {
+        System.err.println("  - " + error);
+    }
+    
+    // Decide how to handle based on your business logic
+    if (errors.size() <= 5) {
+        System.out.println("Minor validation issues - proceeding with import");
+        // Continue processing with warnings
+    } else {
+        System.err.println("Too many validation errors - import rejected");
+        // Reject the import or take corrective action
+    }
 }
 ```
 
@@ -238,4 +287,41 @@ public class Test {
         bpExporter.exportExcel(new File("/your_destination/file.xlsx"));
     }
 }
+```
+
+### Validation and Error Handling
+
+**IMPORTANT**: The library now provides flexible validation handling that doesn't break your business logic.
+
+#### New Validation Approach (Recommended)
+
+By default, the importer **does not throw exceptions** for validation errors. Instead, it:
+
+1. **Completes the import** even when validation fails
+2. **Collects all validation errors** for your review
+3. **Allows you to decide** how to handle errors based on your business requirements
+4. **Provides methods** to check validation status and access error messages
+
+#### Benefits of Non-Exception Handling
+
+- ✅ **Business logic continues** - Import completes regardless of validation errors
+- ✅ **User gets validation messages** - All errors are collected and accessible
+- ✅ **Flexible error handling** - You choose when and how to handle errors
+- ✅ **Better user experience** - Users see all issues at once, not just the first error
+- ✅ **Batch processing** - Can process multiple files and collect all errors
+
+#### Available Validation Methods
+
+```java
+// Check if there were validation errors
+boolean hasErrors = bpImporter.hasValidationErrors();
+
+// Check if validation was successful
+boolean isValid = bpImporter.isValidationSuccessful();
+
+// Get list of error messages
+List<String> errors = bpImporter.getErrorMessageList();
+
+// Explicitly throw exception if you prefer that approach
+bpImporter.throwValidationExceptionIfErrors();
 ```

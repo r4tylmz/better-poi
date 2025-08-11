@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -133,11 +134,26 @@ public class BPImporterTest {
     @Test
     public void testImportExcelWithError() {
         try (InputStream inputStream = getInputStream(FAKE_EMPLOYEE_DATA_ERROR_XLSX)) {
-            bpImporter.importExcel(inputStream);
-            fail("Expected BPValidationException");
-        } catch (BPValidationException e) {
-            assertEquals("Workbook validation failed", e.getMessage());
-            assertFalse(bpImporter.getErrorMessageList().isEmpty());
+            // Import should complete even with validation errors
+            EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
+            assertNotNull(employeeWorkbook);
+            
+            // Check that validation errors were detected
+            assertTrue(bpImporter.hasValidationErrors());
+            assertFalse(bpImporter.isValidationSuccessful());
+            
+            // Check that error messages are available
+            List<String> errorMessages = bpImporter.getErrorMessageList();
+            assertFalse(errorMessages.isEmpty());
+            
+            // Verify we can explicitly throw exception if needed
+            try {
+                bpImporter.throwValidationExceptionIfErrors();
+                fail("Expected BPValidationException when calling throwValidationExceptionIfErrors");
+            } catch (BPValidationException e) {
+                assertTrue(e.getMessage().startsWith("Workbook validation failed"));
+                assertFalse(e.getValidationErrors().isEmpty());
+            }
         } catch (IOException e) {
             // Handle IOException from closing the stream
         }
@@ -160,8 +176,31 @@ public class BPImporterTest {
             EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
             assertNotNull(employeeWorkbook);
             assertTrue(bpImporter.getErrorMessageList().isEmpty());
+            assertFalse(bpImporter.hasValidationErrors());
+            assertTrue(bpImporter.isValidationSuccessful());
         } catch (Exception e) {
             fail("Unexpected exception");
+        }
+    }
+
+    @Test
+    public void testValidationStatusMethods() {
+        try (InputStream inputStream = getInputStream(FAKE_EMPLOYEE_DATA_ERROR_XLSX)) {
+            // Import with validation errors
+            EmployeeWorkbook employeeWorkbook = bpImporter.importExcel(inputStream);
+            assertNotNull(employeeWorkbook);
+            
+            // Test validation status methods
+            assertTrue(bpImporter.hasValidationErrors());
+            assertFalse(bpImporter.isValidationSuccessful());
+            
+            // Test error message access
+            List<String> errorMessages = bpImporter.getErrorMessageList();
+            assertFalse(errorMessages.isEmpty());
+            assertTrue(errorMessages.size() > 0);
+            
+        } catch (IOException e) {
+            fail("Unexpected IOException");
         }
     }
 
