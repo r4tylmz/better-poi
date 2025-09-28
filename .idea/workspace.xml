@@ -24,15 +24,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9de94625-7d95-462b-9ad0-ea7cb87c8c4f" name="Changes" comment="feat: introduce BPOptions and MessageSourceService for improved localization and validation handling and their tests">
-      <change afterPath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/DualPropertiesDemo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/test.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/test_tr.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/BPOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/BPOptions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/i18n/MessageSourceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/validation/CellValidatorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/validation/CellValidatorManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/constraint/ConstraintFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/constraint/ConstraintFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/constraint/DefaultConstraint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/r4tylmz/betterpoi/constraint/DefaultConstraint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/test/CustomConstraint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/io/github/r4tylmz/betterpoi/test/CustomConstraint.java" afterDir="false" />
+    </list>
+    <list id="1b4eef5c-4a4a-4656-a654-e7b4aa0b9185" name="Plans" comment="">
+      <change afterPath="$PROJECT_DIR$/plans/IMPLEMENTATION_ROADMAP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plans/PHASE_1_CORE_INFRASTRUCTURE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plans/PHASE_2_IMPORT_OPERATIONS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plans/PHASE_3_EXPORT_OPERATIONS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plans/PHASE_4_ADVANCED_FEATURES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/plans/PHASE_5_TESTING_DOCUMENTATION.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,6 +138,7 @@
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit3&quot;,
     &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit3&quot;: &quot;&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/ylmz/IdeaProjects/better-poi/src/test/resources&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -142,11 +146,12 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -298,10 +303,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.java in better-poi" />
-        <item itemvalue="JUnit.BPImporterTest.testImportExcelWithError" />
-        <item itemvalue="JUnit.BPImporterTest.importExcelWithNullExcelType" />
         <item itemvalue="JUnit.BPImporterTest.testImportExcelWithNullWorkbookClassAndNullExcelType" />
+        <item itemvalue="JUnit.BPImporterTest.testImportExcelWithError" />
         <item itemvalue="JUnit.BPImporterTest.importExcelWithValidPath" />
+        <item itemvalue="JUnit.BPImporterTest.importExcelWithNullExcelType" />
       </list>
     </recent_temporary>
   </component>
@@ -317,6 +322,7 @@
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="9de94625-7d95-462b-9ad0-ea7cb87c8c4f" name="Changes" comment="" />
+      <changelist id="1b4eef5c-4a4a-4656-a654-e7b4aa0b9185" name="Plans" comment="" />
       <created>1727006129652</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -353,6 +359,15 @@
       <workItem from="1754747650724" duration="124000" />
       <workItem from="1754747785746" duration="5731000" />
       <workItem from="1754815845690" duration="10552000" />
+      <workItem from="1755200719784" duration="3000" />
+      <workItem from="1755351853190" duration="121000" />
+      <workItem from="1755351983246" duration="840000" />
+      <workItem from="1755353005551" duration="454000" />
+      <workItem from="1755353477989" duration="286000" />
+      <workItem from="1756052962855" duration="23000" />
+      <workItem from="1758372676270" duration="2666000" />
+      <workItem from="1759051677412" duration="1691000" />
+      <workItem from="1759054334785" duration="571000" />
     </task>
     <task id="LOCAL-00011" summary="fix(typo): Fix fieldName typo">
       <option name="closed" value="true" />

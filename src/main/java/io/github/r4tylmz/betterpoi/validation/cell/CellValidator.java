@@ -1,6 +1,5 @@
 package io.github.r4tylmz.betterpoi.validation.cell;
 
-import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 
 /**
  * Interface for cell validation.
@@ -8,7 +7,6 @@ import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
  */
 public interface CellValidator {
 
-    void setMessageSourceService(MessageSourceService messageSourceService);
     /**
      * Validates the given cell holder.
      *

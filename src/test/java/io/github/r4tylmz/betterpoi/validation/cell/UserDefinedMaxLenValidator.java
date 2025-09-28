@@ -15,11 +15,6 @@ public class UserDefinedMaxLenValidator implements CellValidator {
     }
 
     @Override
-    public void setMessageSourceService(MessageSourceService messageSourceService) {
-        this.messageSourceService = messageSourceService;
-    }
-
-    @Override
     public String validate(CellHolder cellHolder) {
         if (cellHolder == null
                 || cellHolder.getBpColumn() == null
