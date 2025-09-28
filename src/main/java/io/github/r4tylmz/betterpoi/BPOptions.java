@@ -106,7 +106,7 @@ public final class BPOptions {
          * <ul>
          *   <li>withBundleName("project") → looks for project_tr.properties, project.properties</li>
          *   <li>withBundleName("myapp") → looks for myapp_tr.properties, myapp.properties</li>
-         *   <li>withBundleName(null) → uses only library properties (messages.properties)</li>
+         *   <li>withBundleName(null) → uses only library properties (bp_messages.properties)</li>
          * </ul>
          * 
          * @param bundleName the name of your properties bundle (without .properties extension)

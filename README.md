@@ -195,8 +195,8 @@ The library supports both built-in library properties and user-defined propertie
 
 1. User localized properties (e.g., `project_tr.properties`)
 2. User default properties (e.g., `project.properties`)
-3. Library localized properties (e.g., `messages_tr.properties`)
-4. Library default properties (e.g., `messages.properties`)
+3. Library localized properties (e.g., `bp_messages_tr.properties`)
+4. Library default properties (e.g., `bp_messages.properties`)
 
 #### Usage Examples
 
@@ -222,8 +222,8 @@ BPOptions options = BPOptions.builder()
 **Library Properties (Built-in)**
 ```
 src/main/resources/
-├── messages.properties          # English (default)
-└── messages_tr.properties      # Turkish
+├── bp_messages.properties          # English (default)
+└── bp_messages_tr.properties      # Turkish
 ```
 
 **Custom Properties**
@@ -430,7 +430,7 @@ exporter.exportExcel("output_test.xlsx");
 BPOptions options = BPOptions.builder()
         .withExcelType(ExcelType.XLSX)
         .withLocale("tr")
-        .withBundleName("messages")
+        .withBundleName("bp_messages")
         .build();
 ```
 
