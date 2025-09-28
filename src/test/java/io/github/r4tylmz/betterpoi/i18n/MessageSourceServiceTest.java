@@ -152,10 +152,10 @@ public class MessageSourceServiceTest {
         assertTrue(message.contains("Invalid data"));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testNonExistentKey() {
         MessageSourceService service = new MessageSourceService(Locale.ENGLISH);
-        service.getMessage("nonexistent.key");
+        assertTrue(service.getMessage("nonexistent.key").equals("nonexistent.key"));
     }
 
     @Test

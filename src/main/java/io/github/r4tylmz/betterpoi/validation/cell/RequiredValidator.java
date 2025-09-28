@@ -30,6 +30,6 @@ public class RequiredValidator implements CellValidator {
         String cellValue = cellHolder.getCellValue();
         if (!cellHolder.getBpColumn().required()) return null;
         if (cellValue != null && !cellValue.isEmpty()) return null;
-        return messageSourceService.getMessage("required.validation.error", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
+        return messageSourceService.getMessage("required.validation.error", ColUtil.getHeaderTitle(cellHolder.getBpColumn(), messageSourceService));
     }
 }

@@ -4,6 +4,7 @@ import io.github.r4tylmz.betterpoi.annotation.BPColumn;
 import io.github.r4tylmz.betterpoi.annotation.BPSheet;
 import io.github.r4tylmz.betterpoi.exception.BPExportException;
 import io.github.r4tylmz.betterpoi.exception.BPConfigurationException;
+import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import io.github.r4tylmz.betterpoi.utils.ColUtil;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -30,6 +31,8 @@ import java.util.Map;
 public class BPExporter {
     private static final Logger logger = LoggerFactory.getLogger(BPExporter.class);
     private final Object bpWorkbook;
+    private final BPOptions options;
+    private final MessageSourceService messageSourceService;
     private Workbook workbook;
     private BPFormatter bpFormatter;
     private BPMetadataHandler bpMetadataHandler;
@@ -40,7 +43,19 @@ public class BPExporter {
      * @param bpWorkbook the @BPWorkbook annotated object containing the data to be exported
      */
     public BPExporter(Object bpWorkbook) {
+        this(bpWorkbook, BPOptions.createDefault());
+    }
+
+    /**
+     * Constructor for BPExporter with options.
+     *
+     * @param bpWorkbook the @BPWorkbook annotated object containing the data to be exported
+     * @param options the BPOptions containing configuration for export including i18n settings
+     */
+    public BPExporter(Object bpWorkbook, BPOptions options) {
         this.bpWorkbook = bpWorkbook;
+        this.options = options != null ? options : BPOptions.createDefault();
+        this.messageSourceService = new MessageSourceService(this.options);
     }
 
     /**
@@ -75,7 +90,7 @@ public class BPExporter {
         Row rowHeader = sheet.createRow(0);
         for (int i = 0; i < bpSheet.columns().length; i++) {
             BPColumn bpColumn = bpSheet.columns()[i];
-            rowHeader.createCell(i).setCellValue(ColUtil.getHeaderTitle(bpColumn));
+            rowHeader.createCell(i).setCellValue(ColUtil.getHeaderTitle(bpColumn, messageSourceService));
             bpFormatter.formatHeader(rowHeader.getCell(i));
         }
         bpFormatter.setAutoResizing(sheet, bpSheet.columns().length);

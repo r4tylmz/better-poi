@@ -91,7 +91,7 @@ public class BPImporter<T extends BPExcelWorkbook> {
                 final Object bean = bpSheet.type().newInstance();
                 final BPColumn[] bpColumns = bpSheet.columns();
                 for (BPColumn bpColumn : bpColumns) {
-                    final String header = ColUtil.getHeaderTitle(bpColumn);
+                    final String header = ColUtil.getHeaderTitle(bpColumn, messageSourceService);
                     final Cell cell = row.getCell(headerMap.get(header));
                     if (cell != null) {
                         final Class<?> type = columnsTypes.get(bpColumn.fieldName());
@@ -184,8 +184,9 @@ public class BPImporter<T extends BPExcelWorkbook> {
             final Cell cell = row.getCell(i);
             if (cell != null) {
                 final String header = cell.getStringCellValue();
-                if (header != null) {
-                    headerMap.put(header, i);
+                final String localizedHeader = messageSourceService.getMessage(header);
+                if (localizedHeader != null) {
+                    headerMap.put(localizedHeader, i);
                 }
             }
         }

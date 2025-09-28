@@ -203,7 +203,8 @@ public class MessageSourceService {
             }
         }
         
-        throw new RuntimeException("Message key '" + key + "' not found in any resource bundle for locale: " + locale);
+        // Fallback to key itself if not found
+        return key;
     }
 
     /**

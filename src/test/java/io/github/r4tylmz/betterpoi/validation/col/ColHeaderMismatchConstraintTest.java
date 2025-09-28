@@ -84,6 +84,7 @@ public class ColHeaderMismatchConstraintTest extends EmployeeWorkbookTest {
         Mockito.when(bpSheet.columns()).thenReturn(bpColumns);
         Map<Integer, String> errorMap = colHeaderMismatchConstraint.validate(sheet, bpSheet);
         assertEquals(1, errorMap.size());
+        System.out.println(errorMap);
     }
 
     @Test
@@ -103,6 +104,7 @@ public class ColHeaderMismatchConstraintTest extends EmployeeWorkbookTest {
         Mockito.when(bpSheet.columns()).thenReturn(bpColumns);
         Map<Integer, String> errorMap = colHeaderMismatchConstraint.validate(sheet, bpSheet);
         assertEquals(2, errorMap.size());
+        System.out.println(errorMap);
     }
 
 }
