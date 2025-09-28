@@ -18,11 +18,6 @@ public class RequiredValidator implements CellValidator {
         this.messageSourceService = messageSourceService;
     }
 
-    @Override
-    public void setMessageSourceService(MessageSourceService messageSourceService) {
-        this.messageSourceService = messageSourceService;
-    }
-
     /**
      * Validates the given cell holder.
      * Checks if the cell value is not null or empty if the BPColumn annotation specifies it as required.
@@ -35,6 +30,6 @@ public class RequiredValidator implements CellValidator {
         String cellValue = cellHolder.getCellValue();
         if (!cellHolder.getBpColumn().required()) return null;
         if (cellValue != null && !cellValue.isEmpty()) return null;
-        return messageSourceService.getMessage("required.validation.error", ColUtil.getHeaderTitle(cellHolder.getBpColumn()));
+        return messageSourceService.getMessage("required.validation.error", ColUtil.getHeaderTitle(cellHolder.getBpColumn(), messageSourceService));
     }
 }

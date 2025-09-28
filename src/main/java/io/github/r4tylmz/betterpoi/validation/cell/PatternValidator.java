@@ -20,11 +20,6 @@ public class PatternValidator implements CellValidator {
         this.messageSourceService = messageSourceService;
     }
 
-    @Override
-    public void setMessageSourceService(MessageSourceService messageSourceService) {
-        this.messageSourceService = messageSourceService;
-    }
-
     /**
      * Validates the given cell holder.
      * Checks if the cell value matches the pattern specified in the BPColumn annotation.

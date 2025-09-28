@@ -108,12 +108,6 @@ public class BPMetadataHandlerTest extends TestCase {
     // Custom Validator Test
     public void testCustomCellValidator() {
         class CustomCellValidator implements CellValidator {
-
-            @Override
-            public void setMessageSourceService(MessageSourceService messageSourceService) {
-                return;
-            }
-
             @Override
             public String validate(CellHolder cellHolder) {
                 return "";

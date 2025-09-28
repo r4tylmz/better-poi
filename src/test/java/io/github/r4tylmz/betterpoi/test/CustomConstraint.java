@@ -5,8 +5,12 @@ import io.github.r4tylmz.betterpoi.i18n.MessageSourceService;
 import org.apache.poi.ss.usermodel.Cell;
 
 public class CustomConstraint implements Constraint {
-
     private MessageSourceService messageSourceService;
+    
+    public CustomConstraint(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
 
     @Override
     public void setMessageSourceService(MessageSourceService messageSourceService) {

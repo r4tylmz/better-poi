@@ -95,7 +95,7 @@ public class BPImporterTest {
             BPOptions options = BPOptions
                     .builder()
                     .withExcelType(ExcelType.XLSX)
-                    .withBundleName("messages")
+                    .withBundleName("bp_messages")
                     .withLocale("tr")
                     .build();
             bpImporter = new BPImporter<>(null, options);
@@ -119,7 +119,7 @@ public class BPImporterTest {
         BPOptions options = BPOptions
                 .builder()
                 .withExcelType(ExcelType.XLSX)
-                .withBundleName("messages")
+                .withBundleName("bp_messages")
                 .withLocale("tr")
                 .build();
         bpImporter = new BPImporter<>(EmployeeWorkbook.class, options);
@@ -231,7 +231,7 @@ public class BPImporterTest {
             BPOptions options = BPOptions
                     .builder()
                     .withExcelType(ExcelType.XLS)
-                    .withBundleName("messages")
+                    .withBundleName("bp_messages")
                     .withLocale("tr")
                     .build();
             bpImporter = new BPImporter<>(EmployeeWorkbook.class, options);

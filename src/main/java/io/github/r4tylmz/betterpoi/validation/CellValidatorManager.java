@@ -68,7 +68,7 @@ public class CellValidatorManager {
             final CellHolder cellHolder = new CellHolder(cell, value, field, bpColumn);
             final String errorMessage = cellValidator.validate(cellHolder);
             if (errorMessage != null) {
-                String violation = messageSourceService.getMessage("error.row.column.violation", cell.getRowIndex() + 1, ColUtil.getHeaderTitle(bpColumn), errorMessage);
+                String violation = messageSourceService.getMessage("error.row.column.violation", cell.getRowIndex() + 1, ColUtil.getHeaderTitle(bpColumn, messageSourceService), errorMessage);
                 violations.add(violation);
             }
         }

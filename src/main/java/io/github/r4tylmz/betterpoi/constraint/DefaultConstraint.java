@@ -16,6 +16,16 @@ import java.util.Map;
  */
 public class DefaultConstraint implements Constraint, ColConstraint, RowConstraint, CellValidator {
 
+    private MessageSourceService messageSourceService;
+    
+    public DefaultConstraint() {
+    }
+
+    public DefaultConstraint(MessageSourceService messageSourceService) {
+        this.messageSourceService = messageSourceService;
+    }
+
+
     /**
      * Validates the given cell.
      *

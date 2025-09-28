@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * This class is compatible with Java 1.8 and uses standard Java libraries.
  */
 public class MessageSourceService {
-    private static final String LIBRARY_BUNDLE_NAME = "messages";
+    private static final String LIBRARY_BUNDLE_NAME = "bp_messages";
     private final List<ResourceBundle> bundles = new ArrayList<>();
     private final Locale locale;
 
@@ -203,7 +203,8 @@ public class MessageSourceService {
             }
         }
         
-        throw new RuntimeException("Message key '" + key + "' not found in any resource bundle for locale: " + locale);
+        // Fallback to key itself if not found
+        return key;
     }
 
     /**

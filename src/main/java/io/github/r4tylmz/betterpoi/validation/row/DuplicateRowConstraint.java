@@ -25,10 +25,6 @@ public class DuplicateRowConstraint implements RowConstraint {
         this.messageSourceService = messageSourceService;
     }
 
-    public void setMessageSourceService(MessageSourceService messageSourceService) {
-        this.messageSourceService = messageSourceService;
-    }
-
     private String hashRow(Row row, int colSize) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < colSize; i++) {

@@ -49,8 +49,7 @@ public class ConstraintFactory {
      */
     public CellValidator getCellValidator(Class<? extends CellValidator> validatorClass) {
         try {
-            CellValidator cellValidator = validatorClass.newInstance();
-            cellValidator.setMessageSourceService(messageSourceService);
+            CellValidator cellValidator = validatorClass.getDeclaredConstructor(MessageSourceService.class).newInstance(messageSourceService);
             return cellValidator;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
@@ -115,8 +114,7 @@ public class ConstraintFactory {
      */
     public Constraint getConstraint(Class<? extends Constraint> constraintClass) {
         try {
-            Constraint constraint = constraintClass.newInstance();
-            constraint.setMessageSourceService(messageSourceService);
+            Constraint constraint = constraintClass.getDeclaredConstructor(MessageSourceService.class).newInstance(messageSourceService);
             return constraint;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);
@@ -133,8 +131,7 @@ public class ConstraintFactory {
      */
     public RowConstraint getRowConstraint(Class<? extends RowConstraint> constraintClass) {
         try {
-            RowConstraint rowConstraint = constraintClass.newInstance();
-            rowConstraint.setMessageSourceService(messageSourceService);
+            RowConstraint rowConstraint = constraintClass.getDeclaredConstructor(MessageSourceService.class).newInstance(messageSourceService);
             return rowConstraint;
         } catch (ReflectiveOperationException e) {
             logger.error(e.getMessage(), e);

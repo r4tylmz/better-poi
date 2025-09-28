@@ -45,7 +45,8 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
         for (int i = 0; i < headerRow.getLastCellNum(); i++) {
             Cell cell = headerRow.getCell(i);
             if (cell != null) {
-                colHeaders.add(dataFormatter.formatCellValue(cell));
+                String rawHeader = dataFormatter.formatCellValue(cell);
+                colHeaders.add(messageSourceService.getMessage(rawHeader));
             }
         }
         return Collections.unmodifiableList(colHeaders);
@@ -77,10 +78,10 @@ public class ColHeaderMismatchConstraint implements ColConstraint {
 
         for (int colNo = 0; colNo < bpSheet.columns().length; colNo++) {
             BPColumn bpColumn = bpSheet.columns()[colNo];
-            String expectedHeader = ColUtil.getHeaderTitle(bpColumn);
+            String expectedHeader = ColUtil.getHeaderTitle(bpColumn, messageSourceService);
 
             if (!colHeaders.contains(expectedHeader)) {
-                String violation = messageSourceService.getMessage("header.mismatch.error", expectedHeader, colHeaders);
+                String violation = messageSourceService.getMessage("header.mismatch.error", colNo, expectedHeader, colHeaders);
                 violationMap.put(colNo, violation);
             }
         }
