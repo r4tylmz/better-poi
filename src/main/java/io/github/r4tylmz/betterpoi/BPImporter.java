@@ -184,9 +184,8 @@ public class BPImporter<T extends BPExcelWorkbook> {
             final Cell cell = row.getCell(i);
             if (cell != null) {
                 final String header = cell.getStringCellValue();
-                final String localizedHeader = messageSourceService.getMessage(header);
-                if (localizedHeader != null) {
-                    headerMap.put(localizedHeader, i);
+                if (header != null) {
+                    headerMap.put(header, i);
                 }
             }
         }
