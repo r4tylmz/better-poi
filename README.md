@@ -25,7 +25,7 @@ A Java library for Excel file operations using Apache POI with enhanced validati
 <dependency>
     <groupId>io.github.r4tylmz</groupId>
     <artifactId>better-poi</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
 </dependency>
 ```
 
