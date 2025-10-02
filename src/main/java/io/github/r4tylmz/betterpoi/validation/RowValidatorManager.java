@@ -32,7 +32,7 @@ public class RowValidatorManager implements ValidatorManager {
     public String getErrorMessage(Map<Integer, String> rowViolationMap) {
         final StringBuilder errorMessage = new StringBuilder();
         for (Map.Entry<Integer, String> entry : rowViolationMap.entrySet()) {
-            errorMessage.append(messageSourceService.getMessage("error.row.violation", entry.getValue()));
+            errorMessage.append(messageSourceService.getMessage("error.row.violation", entry.getKey() + 1, entry.getValue()));
         }
         return errorMessage.toString();
     }
