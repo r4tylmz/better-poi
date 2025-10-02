@@ -143,7 +143,7 @@ public class BPExporterTest extends TestCase {
     public void testExportWithNullWorkbook() {
         BPExporter exporter = new BPExporter(null);
         try {
-            exporter.exportExcel("test.xlsx");
+            exporter.exportExcel(tempFile.getAbsolutePath());
             fail("Should throw RuntimeException");
         } catch (RuntimeException e) {
             // Expected exception because workbook is null
