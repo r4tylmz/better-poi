@@ -94,6 +94,11 @@ public class BPValidator {
      */
     private boolean isSheetExist(Workbook workbook, final BPSheet bpSheet) {
         for (Sheet sheet : workbook) {
+            if (sheet != null && (workbook.isSheetHidden(workbook.getSheetIndex(sheet.getSheetName()))
+                    || workbook.isSheetVeryHidden(workbook.getSheetIndex(sheet.getSheetName())))) {
+                continue;
+            }
+
             if (sheet == null || (sheet.getSheetName() != null && !sheet.getSheetName().equals(bpSheet.sheetName()))) {
                 errorMessages.add(messageSourceService.getMessage("sheet.not.found.error", bpSheet.sheetName()));
                 return false;
@@ -125,6 +130,10 @@ public class BPValidator {
             final List<BPSheet> bpSheets = bpMetadataHandler.getSheets();
             for (final BPSheet bpSheet : bpSheets) {
                 if (bpSheet.toImport()) {
+                    final int sheetIndex = workbook.getSheetIndex(bpSheet.sheetName());
+                    if (sheetIndex == -1 || workbook.isSheetHidden(sheetIndex) || workbook.isSheetVeryHidden(sheetIndex)) {
+                        continue;
+                    }
                     final Sheet sheet = workbook.getSheet(bpSheet.sheetName());
                     if (!isSheetExist(workbook, bpSheet)) {
                         continue;
