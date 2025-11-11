@@ -4,6 +4,7 @@ import io.github.r4tylmz.betterpoi.enums.ExcelType;
 import io.github.r4tylmz.betterpoi.exception.BPConfigurationException;
 import io.github.r4tylmz.betterpoi.exception.BPImportException;
 import io.github.r4tylmz.betterpoi.exception.BPValidationException;
+import io.github.r4tylmz.betterpoi.test.ConvertWorkbook;
 import io.github.r4tylmz.betterpoi.test.EmployeeWorkbook;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +12,14 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -25,6 +32,7 @@ public class BPImporterTest {
     public static final String FAKE_EMPLOYEE_DATA_ERROR_XLSX = "Fake_Employee_Data_Error.xlsx";
     public static final String FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT = "Fake_Employee_Data_General_Format.xlsx";
     public static final String FAKE_EMPLOYEE_DATA_XLSX_GENERAL_FORMAT_PATH = "src/test/resources/Fake_Employee_Data_General_Format.xlsx";
+    public static final String CONVERT_DATA_XLSX_PATH = "src/test/resources/Convert_Test.xlsx";
 
     private BPImporter<EmployeeWorkbook> bpImporter;
 
@@ -271,4 +279,37 @@ public class BPImporterTest {
         assertNotNull(employeeWorkbook);
         assertEquals(20, employeeWorkbook.getEmployeeRecordList().size());
     }
+
+    
+    @Test
+    public void testImportExcelWithValidFileAndConvertRecord() {
+        BPOptions bpOptions = BPOptions.createDefault();
+        BPImporter<ConvertWorkbook> convertImporter = new BPImporter<>(ConvertWorkbook.class, bpOptions);
+        ConvertWorkbook convertWorkbook = convertImporter.importExcel(new File(CONVERT_DATA_XLSX_PATH));
+
+        assertNotNull(convertWorkbook);
+        assertEquals(2, convertWorkbook.getConvertRecords().size());
+
+        assertNull(convertWorkbook.getConvertRecords().get(0).getBd());
+        assertNull(convertWorkbook.getConvertRecords().get(0).getD());
+        assertNull(convertWorkbook.getConvertRecords().get(0).getDate());
+        assertEquals("Deneme", convertWorkbook.getConvertRecords().get(0).getStr());
+
+        assertEquals(new BigDecimal("123.45"), convertWorkbook.getConvertRecords().get(1).getBd());
+        assertEquals(123.45, convertWorkbook.getConvertRecords().get(1).getD(), 0.001);
+        assertEquals("Deneme", convertWorkbook.getConvertRecords().get(1).getStr());
+
+        Date actualDate = convertWorkbook.getConvertRecords().get(1).getDate();
+        assertNotNull(actualDate);
+
+        LocalDate expectedDate = LocalDate.of(2000, 1, 1);
+        LocalDate actualLocalDate = actualDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        assertEquals(expectedDate.getYear(), actualLocalDate.getYear());
+        assertEquals(expectedDate.getMonthValue(), actualLocalDate.getMonthValue());
+        assertEquals(expectedDate.getDayOfMonth(), actualLocalDate.getDayOfMonth());
+    }
+    
 }

@@ -96,6 +96,9 @@ public class BPImporter<T extends BPExcelWorkbook> {
                     if (cell != null) {
                         final Class<?> type = columnsTypes.get(bpColumn.fieldName());
                         final Object value = CellUtil.getCellValue(cell, type);
+                        if(value == null && !bpColumn.required()){
+                            continue;
+                        }
                         final Object converted = converter.convert(value, type);
                         PropertyUtils.setProperty(bean, bpColumn.fieldName(), converted);
                     }
